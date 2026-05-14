@@ -7,7 +7,6 @@ use Illuminate\Database\Eloquent\Model;
 class LeaveRequest extends Model
 {
 
-
     // Common Leave Types
     public const LEAVE_TYPE_VACATION = 'Vacation';
     public const LEAVE_TYPE_SICK = 'Sick';

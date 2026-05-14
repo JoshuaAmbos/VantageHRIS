@@ -3,6 +3,8 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Employee extends Model
 {
@@ -35,4 +37,40 @@ class Employee extends Model
         self::STATUS_FULL_TIME,
         self::STATUS_PART_TIME,
     ];
+
+    /**
+     * User account of this employee.
+     */
+    public function user(): BelongsTo {
+        return $this->belongsTo(User::class);
+    }
+
+    /**
+     * Department this employee belongs to.
+     */
+    public function department(): BelongsTo {
+        return $this->belongsTo(Department::class);
+    }
+
+    /**
+     * Attendance records of this employee.
+     */
+    public function attendanceRecords(): HasMany {
+        return $this->hasMany(Attendance::class);
+    }
+
+    /**
+     * Leave requests of this employee.
+     */
+    public function leaveRequestsSubmitted(): HasMany {
+        return $this->hasMany(LeaveRequest::class, 'employee_id');
+    }
+
+    /**
+     * Leave requests approved by this employee.
+     */
+    public function leaveRequestsApproved(): HasMany {
+        return $this->hasMany(LeaveRequest::class, 'approved_by');
+    
+    }
 }

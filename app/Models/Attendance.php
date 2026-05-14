@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Attendance extends Model
 {
@@ -29,4 +30,13 @@ class Attendance extends Model
         'status',
         'remarks'
     ];
+
+    /**
+     * Employee this record belongs to.
+     */
+    public function employee(): BelongsTo {
+        return $this->belongsTo(Employee::class);
+    }
+    
+    
 }
