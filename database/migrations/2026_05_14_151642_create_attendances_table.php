@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\Attendance;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -13,6 +14,13 @@ return new class extends Migration
     {
         Schema::create('attendances', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('employee_id')->constrained()->cascadeOnDelete();
+            $table->date('attendance_date');
+            $table->time('time_in');
+            $table->time('time_out');
+            $table->enum('status', [Attendance::STATUSES])
+                ->default(Attendance::STATUS_PRESENT);
+            $table->string('remarks');
             $table->timestamps();
         });
     }
