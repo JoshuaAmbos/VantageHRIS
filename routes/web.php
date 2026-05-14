@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\Route;
 
 // Login
 Route::get('/', function () {
-    return view('login');
+    return view('auth/login');
 });
 
 // Dashboard Module
