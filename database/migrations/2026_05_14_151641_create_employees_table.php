@@ -31,7 +31,7 @@ return new class extends Migration
 
         // manager_id FK on Departments Table
         Schema::table('departments', function (Blueprint $table){
-             $table->foreignId('manager_id')->after('description')->constrained('employees', 'id')->cascadeOnDelete();
+             $table->foreignId('manager_id')->nullable()->after('description')->constrained('employees', 'id')->cascadeOnDelete();
         });
     }
 

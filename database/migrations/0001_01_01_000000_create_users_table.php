@@ -37,6 +37,14 @@ return new class extends Migration
             $table->longText('payload');
             $table->integer('last_activity')->index();
         });
+
+        // Create test admin
+        User::create([
+            'name' => 'Admin',
+            'email' => 'admin@vantage.com',
+            'password' => 'password',
+            'role' => User::ROLE_ADMIN,
+        ]);
     }
 
     /**
