@@ -18,22 +18,17 @@
 
 <body class="font-sans text-vantage-900 antialiased bg-vantage-bg relative overflow-x-hidden min-h-screen">
 
-    <!-- Decorative Header Background -->
-    <div class="absolute top-0 left-0 w-full h-[45vh] bg-vantage-900 z-0">
-        <div class="absolute inset-0 bg-gradient-to-br from-vantage-800 to-transparent opacity-50"></div>
-    </div>
-
     <!-- Main Content Container -->
-    <div class="min-h-screen flex flex-col sm:justify-center items-center pt-6 sm:pt-0 relative z-10">
+    <div class="min-h-screen flex flex-col sm:justify-center items-center pt-6 sm:pt-0 relative z-10 bg-vantage-800">
 
-        <!-- The $slot is where your login.blade.php card gets injected -->
         <div class="w-full sm:max-w-md mt-6 px-4">
             {{ $slot }}
         </div>
 
-        <!-- Footer text for the authentication pages -->
         <div class="mt-8 text-center text-sm text-vantage-900/60 font-medium">
             &copy; {{ date('Y') }} VantageHRIS. All rights reserved.
+            <br><br>
+            By Ambos, Joshua
         </div>
 
     </div>

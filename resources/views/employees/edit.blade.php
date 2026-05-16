@@ -80,6 +80,7 @@
                             class="block text-sm font-semibold text-vantage-900 mb-1">Department</label>
                         <select name="department_id" id="department_id"
                             class="w-full rounded-lg border-gray-300 shadow-sm focus:border-vantage-500 focus:ring focus:ring-vantage-500/20 transition-colors">
+                            <option value="">None</option>
                             @foreach($departments as $dept)
                                 <option value="{{ $dept->id }}" {{ old('department_id', $employee->department_id) == $dept->id ? 'selected' : '' }}>
                                     {{ $dept->name }}

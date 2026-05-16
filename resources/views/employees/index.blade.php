@@ -30,6 +30,9 @@
                                 Contact</th>
                             <th scope="col"
                                 class="px-6 py-4 text-left text-xs font-bold text-vantage-800 uppercase tracking-wider">
+                                Department</th>
+                            <th scope="col"
+                                class="px-6 py-4 text-left text-xs font-bold text-vantage-800 uppercase tracking-wider">
                                 Role</th>
                             <th scope="col"
                                 class="px-6 py-4 text-left text-xs font-bold text-vantage-800 uppercase tracking-wider">
@@ -50,12 +53,16 @@
                                         </div>
                                         <div class="ml-3">
                                             <div class="text-sm font-medium text-vantage-900">{{ $employee->first_name }}
-                                                {{ $employee->last_name }}</div>
+                                                {{ $employee->last_name }}
+                                            </div>
                                         </div>
                                     </div>
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap">
                                     <div class="text-sm text-slate-600">{{ $employee->email }}</div>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <div class="text-sm text-slate-600">{{ $employee->department->name ?? 'N/A'}}</div>
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap">
                                     <div class="text-sm text-vantage-900 font-medium">{{ $employee->position }}</div>

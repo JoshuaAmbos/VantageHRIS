@@ -21,11 +21,11 @@ class EmployeeRequest extends FormRequest
             'last_name'         => 'required|string|max:225',
             'email'             => 'required|email|unique:employees,email,' . $id,
             'phone'             => 'required|string|unique:employees,phone,' . $id,
-            'department_id'     => 'required|exists:departments,id',
+            'department_id'     => 'nullable|exists:departments,id',
             'address'           => 'required|string', 
             'position'          => 'required|string',
-            'hire_date'         => 'required|date|before_or_equal:now', 
             'employment_status' => 'required|string',
+            'hire_date'         => 'required|date|before_or_equal:now', 
         ];
 }
 }

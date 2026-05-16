@@ -12,7 +12,7 @@
         </div>
 
         <div class="relative z-10">
-            <h3 class="text-3xl font-extrabold mb-2 tracking-tight">Welcome back!</h3>
+            <h3 class="text-3xl font-extrabold mb-2 tracking-tight">Welcome back, {{ Auth::user()->name }}!</h3>
             <p class="text-vantage-100/80 max-w-xl text-sm leading-relaxed">
                 Here is a quick overview of what is happening across your organization today. Use the quick actions
                 below to manage your teams and departments.
@@ -23,7 +23,7 @@
     <!-- Key Metrics Grid -->
     <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
 
-        <!-- Metric Card 1: Employees -->
+        <!-- Employees -->
         <div
             class="bg-white rounded-xl shadow-sm border border-gray-100 p-6 hover:shadow-md transition-shadow duration-200">
             <div class="flex items-center justify-between mb-4">
@@ -37,17 +37,17 @@
                     </svg>
                 </div>
             </div>
-            <p class="text-3xl font-bold text-vantage-900">142</p>
+            <p class="text-3xl font-bold text-vantage-900">{{ $totalEmployees }}</p>
             <p class="text-xs text-vantage-500 mt-2 font-medium flex items-center">
                 <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                         d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path>
                 </svg>
-                +3 newly onboarded this month
+                +{{ $numEmployeesMonth }} newly onboarded this month
             </p>
         </div>
 
-        <!-- Metric Card 2: Departments -->
+        <!-- Departments -->
         <div
             class="bg-white rounded-xl shadow-sm border border-gray-100 p-6 hover:shadow-md transition-shadow duration-200">
             <div class="flex items-center justify-between mb-4">
@@ -61,7 +61,7 @@
                     </svg>
                 </div>
             </div>
-            <p class="text-3xl font-bold text-vantage-900">8</p>
+            <p class="text-3xl font-bold text-vantage-900">{{ $totalDepartments }}</p>
             <p class="text-xs text-slate-400 mt-2 font-medium">Across all active branches</p>
         </div>
 
@@ -79,13 +79,13 @@
                     </svg>
                 </div>
             </div>
-            <p class="text-3xl font-bold text-vantage-900">12</p>
+            <p class="text-3xl font-bold text-vantage-900">--</p>
             <p class="text-xs text-amber-500 mt-2 font-medium flex items-center">
                 <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                         d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                 </svg>
-                5 pending HR approval
+                -- pending HR approval
             </p>
         </div>
 

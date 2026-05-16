@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DepartmentController;
 use App\Http\Controllers\EmployeeController;
 use App\Http\Controllers\ProfileController;
@@ -11,9 +12,7 @@ Route::get('/', function () {
 });
 
 // Dashboard Module
-Route::get('/dashboard', function () {
-    return view('dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
+Route::get('/dashboard', [DashboardController::class, 'index'])->middleware(['auth', 'verified'])->name('dashboard');
 
 // Departments Module (Admin, HR)
 Route::middleware(['auth', 'role:admin,hr'])->group(function () {

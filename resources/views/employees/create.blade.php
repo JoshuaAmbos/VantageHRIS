@@ -18,14 +18,14 @@
                     {{-- 1. Names --}}
                     <div>
                         <label for="first_name" class="block text-sm font-semibold text-vantage-900 mb-1">First
-                            Name</label>
+                            Name <span style="color: red">*</span></label>
                         <input type="text" name="first_name" id="first_name" value="{{ old('first_name') }}"
                             class="w-full rounded-lg border-gray-300 shadow-sm focus:border-vantage-500 focus:ring focus:ring-vantage-500/20 transition-colors">
                         @error('first_name') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
                     </div>
                     <div>
                         <label for="last_name" class="block text-sm font-semibold text-vantage-900 mb-1">Last
-                            Name</label>
+                            Name <span style="color: red">*</span></label>
                         <input type="text" name="last_name" id="last_name" value="{{ old('last_name') }}"
                             class="w-full rounded-lg border-gray-300 shadow-sm focus:border-vantage-500 focus:ring focus:ring-vantage-500/20 transition-colors">
                         @error('last_name') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
@@ -34,14 +34,14 @@
                     {{-- 2. Contact Info --}}
                     <div>
                         <label for="email" class="block text-sm font-semibold text-vantage-900 mb-1">Email
-                            Address</label>
+                            Address <span style="color: red">*</span></label>
                         <input type="email" name="email" id="email" value="{{ old('email') }}"
                             class="w-full rounded-lg border-gray-300 shadow-sm focus:border-vantage-500 focus:ring focus:ring-vantage-500/20 transition-colors">
                         @error('email') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
                     </div>
                     <div>
                         <label for="phone" class="block text-sm font-semibold text-vantage-900 mb-1">Phone
-                            Number</label>
+                            Number <span style="color: red">*</span></label>
                         <input type="text" name="phone" id="phone" value="{{ old('phone') }}"
                             class="w-full rounded-lg border-gray-300 shadow-sm focus:border-vantage-500 focus:ring focus:ring-vantage-500/20 transition-colors">
                         @error('phone') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
@@ -49,7 +49,7 @@
 
                     <div class="md:col-span-2">
                         <label for="address" class="block text-sm font-semibold text-vantage-900 mb-1">Residential
-                            Address</label>
+                            Address <span style="color: red">*</span></label>
                         <input type="text" name="address" id="address" value="{{ old('address') }}"
                             class="w-full rounded-lg border-gray-300 shadow-sm focus:border-vantage-500 focus:ring focus:ring-vantage-500/20 transition-colors">
                         @error('address') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
@@ -66,7 +66,7 @@
                             class="block text-sm font-semibold text-vantage-900 mb-1">Department</label>
                         <select name="department_id" id="department_id"
                             class="w-full rounded-lg border-gray-300 shadow-sm focus:border-vantage-500 focus:ring focus:ring-vantage-500/20 transition-colors">
-                            <option value="">Select Department</option>
+                            <option value="">None</option>
                             @foreach($departments as $dept)
                                 <option value="{{ $dept->id }}" {{ old('department_id') == $dept->id ? 'selected' : '' }}>
                                     {{ $dept->name }}
@@ -77,7 +77,8 @@
                     </div>
 
                     <div>
-                        <label for="position" class="block text-sm font-semibold text-vantage-900 mb-1">Position</label>
+                        <label for="position" class="block text-sm font-semibold text-vantage-900 mb-1">Position <span
+                                style="color: red">*</span></label>
                         <select name="position" id="position"
                             class="w-full rounded-lg border-gray-300 shadow-sm focus:border-vantage-500 focus:ring focus:ring-vantage-500/20 transition-colors">
                             <option value="{{ \App\Models\Employee::POSITION_SOFTWARE_ENGINEER }}">Software Engineer
@@ -90,8 +91,8 @@
                     </div>
 
                     <div>
-                        <label for="employment_status"
-                            class="block text-sm font-semibold text-vantage-900 mb-1">Status</label>
+                        <label for="employment_status" class="block text-sm font-semibold text-vantage-900 mb-1">Status
+                            <span style="color: red">*</span></label>
                         <select name="employment_status" id="employment_status"
                             class="w-full rounded-lg border-gray-300 shadow-sm focus:border-vantage-500 focus:ring focus:ring-vantage-500/20 transition-colors">
                             <option value="{{ \App\Models\Employee::STATUS_FULL_TIME }}">Full-time</option>
@@ -101,7 +102,7 @@
 
                     <div>
                         <label for="hire_date" class="block text-sm font-semibold text-vantage-900 mb-1">Hire
-                            Date</label>
+                            Date <span style="color: red">*</span></label>
                         <input type="date" name="hire_date" id="hire_date" value="{{ old('hire_date') }}"
                             class="w-full rounded-lg border-gray-300 shadow-sm focus:border-vantage-500 focus:ring focus:ring-vantage-500/20 transition-colors">
                         @error('hire_date') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror

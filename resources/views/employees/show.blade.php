@@ -64,7 +64,7 @@
                     </div>
                     <div>
                         <p class="text-xs text-slate-400 uppercase tracking-wider font-semibold">Department ID</p>
-                        <p class="font-medium text-vantage-900">{{ $employee->department_id }}</p>
+                        <p class="font-medium text-vantage-900">{{ $employee->department_id ?? 'N/A'}}</p>
                     </div>
                     <div>
                         <p class="text-xs text-slate-400 uppercase tracking-wider font-semibold">System Link</p>
