@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" class="h-full bg-slate-50">
 
 <head>
     <meta charset="utf-8">
@@ -8,128 +8,147 @@
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 
-<body class="font-sans antialiased bg-vantage-bg text-vantage-900 flex h-screen overflow-hidden">
+<body
+    class="font-sans antialiased bg-slate-50 text-slate-900 h-full flex overflow-hidden selection:bg-vantage-500 selection:text-white">
 
-    <!-- Professional Sidebar using the deepest Navy Blue -->
-    <aside class="w-72 bg-vantage-900 text-white flex-shrink-0 flex flex-col shadow-2xl z-20 relative">
-        <!-- Brand Logo -->
-        <div class="h-20 flex items-center px-8 border-b border-vantage-800">
-            <div class="flex items-center space-x-3">
-                <div class="w-9 h-9 bg-vantage-50 rounded-lg flex items-center justify-center shadow-inner">
-                    <span class="text-vantage-900 font-bold text-lg">V</span>
+    <!-- Premium Sidebar Context Container -->
+    <aside class="w-64 bg-slate-900 text-slate-200 flex-shrink-0 flex flex-col border-r border-slate-800 z-20 relative">
+
+        <!-- Brand Identity Container -->
+        <div class="h-16 flex items-center px-6 border-b border-slate-800 bg-slate-950/40">
+            <div class="flex items-center space-x-2.5">
+                <div
+                    class="w-8 h-8 bg-gradient-to-br from-vantage-400 to-vantage-600 rounded-lg flex items-center justify-center shadow-lg shadow-vantage-900/40">
+                    <span class="text-white font-extrabold text-base tracking-tighter">V</span>
                 </div>
-                <span class="text-2xl font-bold tracking-tight">Vantage<span class="text-vantage-50">HRIS</span></span>
+                <span class="text-lg font-bold tracking-tight text-white">
+                    Vantage<span class="text-vantage-400 font-medium">HRIS</span>
+                </span>
             </div>
         </div>
 
-        <!-- Navigation Links -->
-        <nav class="flex-1 px-4 py-6 space-y-2 overflow-y-auto">
-            <p class="px-4 text-xs font-semibold text-vantage-400 uppercase tracking-wider mb-2">Main Menu</p>
+        <!-- Scrollable Navigation Matrix -->
+        <nav class="flex-1 px-3 py-4 space-y-0.5 overflow-y-auto custom-scrollbar">
+            <p class="px-3 text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-3">Workspace</p>
 
-            <!-- Dashboard Link -->
+            <!-- Dashboard Node -->
             <a href="{{ route('dashboard') }}"
-                class="flex items-center px-4 py-3 rounded-lg transition-all duration-200 group {{ request()->routeIs('dashboard') ? 'bg-vantage-500 shadow-md text-white' : 'text-vantage-100/60 hover:bg-vantage-800 hover:text-white' }}">
-                <svg class="w-5 h-5 mr-3 opacity-80 group-hover:opacity-100" fill="none" stroke="currentColor"
-                    viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                class="flex items-center px-3 py-2.5 rounded-lg transition-all duration-150 group relative {{ request()->routeIs('dashboard') ? 'bg-slate-800 text-white font-medium' : 'text-slate-400 hover:bg-slate-800/60 hover:text-slate-200' }}">
+                @if(request()->routeIs('dashboard'))
+                    <span class="absolute left-0 top-2.5 bottom-2.5 w-1 bg-vantage-500 rounded-r"></span>
+                @endif
+                <svg class="w-[18px] h-[18px] mr-3 transition-colors {{ request()->routeIs('dashboard') ? 'text-vantage-400' : 'text-slate-500 group-hover:text-slate-300' }}"
+                    fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round"
                         d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z">
                     </path>
                 </svg>
-                <span class="font-medium">Dashboard</span>
+                <span class="text-sm">Dashboard</span>
             </a>
 
-            <!-- Employees Link -->
+            <!-- Employees Node -->
             <a href="{{ route('employees.index') }}"
-                class="flex items-center px-4 py-3 rounded-lg transition-all duration-200 group {{ request()->routeIs('employees.*') ? 'bg-vantage-500 shadow-md text-white' : 'text-vantage-100/60 hover:bg-vantage-800 hover:text-white' }}">
-                <svg class="w-5 h-5 mr-3 opacity-80 group-hover:opacity-100" fill="none" stroke="currentColor"
-                    viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                class="flex items-center px-3 py-2.5 rounded-lg transition-all duration-150 group relative {{ request()->routeIs('employees.*') ? 'bg-slate-800 text-white font-medium' : 'text-slate-400 hover:bg-slate-800/60 hover:text-slate-200' }}">
+                @if(request()->routeIs('employees.*'))
+                    <span class="absolute left-0 top-2.5 bottom-2.5 w-1 bg-vantage-500 rounded-r"></span>
+                @endif
+                <svg class="w-[18px] h-[18px] mr-3 transition-colors {{ request()->routeIs('employees.*') ? 'text-vantage-400' : 'text-slate-500 group-hover:text-slate-300' }}"
+                    fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round"
                         d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z">
                     </path>
                 </svg>
-                <span class="font-medium">Employees</span>
+                <span class="text-sm">Employees</span>
             </a>
 
-            <!-- Departments Link -->
+            <!-- Departments Node -->
             <a href="{{ route('departments.index') }}"
-                class="flex items-center px-4 py-3 rounded-lg transition-all duration-200 group {{ request()->routeIs('departments.*') ? 'bg-vantage-500 shadow-md text-white' : 'text-vantage-100/60 hover:bg-vantage-800 hover:text-white' }}">
-                <svg class="w-5 h-5 mr-3 opacity-80 group-hover:opacity-100" fill="none" stroke="currentColor"
-                    viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                class="flex items-center px-3 py-2.5 rounded-lg transition-all duration-150 group relative {{ request()->routeIs('departments.*') ? 'bg-slate-800 text-white font-medium' : 'text-slate-400 hover:bg-slate-800/60 hover:text-slate-200' }}">
+                @if(request()->routeIs('departments.*'))
+                    <span class="absolute left-0 top-2.5 bottom-2.5 w-1 bg-vantage-500 rounded-r"></span>
+                @endif
+                <svg class="w-[18px] h-[18px] mr-3 transition-colors {{ request()->routeIs('departments.*') ? 'text-vantage-400' : 'text-slate-500 group-hover:text-slate-300' }}"
+                    fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round"
                         d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4">
                     </path>
                 </svg>
-                <span class="font-medium">Departments</span>
+                <span class="text-sm">Departments</span>
             </a>
 
-            {{-- Attendances Link --}}
+            <!-- Attendances Node -->
             <a href="{{ route('attendances.index') }}"
-                class="flex items-center px-4 py-3 rounded-lg transition-all duration-200 group {{ request()->routeIs('attendances.*') ? 'bg-vantage-500 shadow-md text-white' : 'text-vantage-100/60 hover:bg-vantage-800 hover:text-white' }}">
-                <svg class="w-5 h-5 mr-3 opacity-80 group-hover:opacity-100" fill="none" stroke="currentColor"
-                    stroke-width="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                class="flex items-center px-3 py-2.5 rounded-lg transition-all duration-150 group relative {{ request()->routeIs('attendances.*') ? 'bg-slate-800 text-white font-medium' : 'text-slate-400 hover:bg-slate-800/60 hover:text-slate-200' }}">
+                @if(request()->routeIs('attendances.*'))
+                    <span class="absolute left-0 top-2.5 bottom-2.5 w-1 bg-vantage-500 rounded-r"></span>
+                @endif
+                <svg class="w-[18px] h-[18px] mr-3 transition-colors {{ request()->routeIs('attendances.*') ? 'text-vantage-400' : 'text-slate-500 group-hover:text-slate-300' }}"
+                    fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round"
-                        d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z">
-                    </path>
+                        d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"></path>
                 </svg>
-                <span class="font-medium">Attendances</span>
+                <span class="text-sm">Attendances</span>
             </a>
         </nav>
 
-        <!-- Bottom User Section -->
-        <div class="p-5 bg-vantage-900 border-t border-vantage-800">
-            <div class="flex items-center space-x-3 mb-4">
+        <!-- Profile & System Sign-Out Footer Footer -->
+        <div class="p-4 bg-slate-950/30 border-t border-slate-800/60">
+            <div class="flex items-center space-x-3 mb-3.5">
                 <div
-                    class="w-10 h-10 rounded-full bg-vantage-50 text-vantage-900 flex items-center justify-center text-sm font-extrabold shadow-sm">
-                    {{ substr(Auth::user()->name ?? 'U', 0, 1) }}
+                    class="w-9 h-9 rounded-full bg-slate-800 border border-slate-700 text-slate-200 flex items-center justify-center text-xs font-bold ring-2 ring-slate-900">
+                    {{ substr(Auth::user()->name ?? 'A', 0, 1) }}
                 </div>
                 <div class="overflow-hidden">
-                    <p class="text-sm font-semibold truncate text-white">{{ Auth::user()->name ?? 'User' }}</p>
-                    <p class="text-xs text-vantage-300 font-medium">Administrator</p>
+                    <p class="text-xs font-semibold truncate text-slate-100 leading-none mb-1">
+                        {{ Auth::user()->name ?? 'Administrator' }}</p>
+                    <p class="text-[10px] text-slate-500 font-medium tracking-wide">System Admin</p>
                 </div>
             </div>
             <form method="POST" action="{{ route('logout') }}">
                 @csrf
                 <button type="submit"
-                    class="w-full flex items-center justify-center space-x-2 py-2 rounded-md bg-vantage-800 text-xs text-vantage-100 hover:bg-vantage-600 transition-colors">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    class="w-full flex items-center justify-center space-x-2 py-2 rounded-md bg-slate-800/50 text-xs text-slate-400 hover:bg-red-950/40 hover:text-red-400 border border-slate-800 hover:border-red-900/50 transition-all duration-150">
+                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round"
                             d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1">
                         </path>
                     </svg>
-                    <span>Sign Out</span>
+                    <span class="font-medium">Sign Out</span>
                 </button>
             </form>
         </div>
     </aside>
 
-    <!-- Main Workspace -->
-    <div class="flex-1 flex flex-col min-w-0 bg-vantage-bg">
-        <!-- Top Insight Bar -->
+    <!-- Main Workspace Surface -->
+    <div class="flex-1 flex flex-col min-w-0 bg-slate-50">
+
+        <!-- Shared Header Workspace Bar -->
         <header
-            class="h-20 bg-white/80 backdrop-blur-md border-b border-gray-200 flex items-center px-8 justify-between shadow-sm z-10">
+            class="h-16 bg-white border-b border-slate-200/80 flex items-center px-8 justify-between relative z-10 shadow-xs">
             <div class="flex items-center">
-                <h2 class="text-xl font-bold text-vantage-900 tracking-tight">
+                <h2 class="text-base font-bold text-slate-900 tracking-tight">
                     {{ $header ?? 'Overview' }}
                 </h2>
             </div>
 
-            <div class="flex items-center space-x-6">
-                <!-- Date/Time Display -->
+            <!-- Contextual Operations Pane -->
+            <div class="flex items-center space-x-4">
                 <div
-                    class="hidden md:flex items-center text-sm font-medium text-vantage-900 bg-vantage-50/50 border border-vantage-300/50 px-4 py-2 rounded-full">
-                    <svg class="w-4 h-4 mr-2 text-vantage-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z">
+                    class="hidden sm:flex items-center text-xs font-semibold text-slate-600 bg-slate-100 border border-slate-200 px-3 py-1.5 rounded-md shadow-xs">
+                    <svg class="w-3.5 h-3.5 mr-1.5 text-slate-400" fill="none" stroke="currentColor" stroke-width="2"
+                        viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                            d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2-2v12a2 2 0 002 2z">
                         </path>
                     </svg>
-                    {{ now()->format('l, F j, Y') }}
+                    {{ now()->format('D, M j, Y') }}
                 </div>
             </div>
         </header>
 
-        <!-- Scrollable Content View -->
-        <main class="flex-1 overflow-y-auto p-8 lg:p-10">
-            <div class="max-w-7xl mx-auto text-vantage-900">
+        <!-- Viewport Scrollable Execution Engine Slot -->
+        <main class="flex-1 overflow-y-auto p-8 bg-slate-50/50">
+            <div class="max-w-7xl mx-auto">
                 {{ $slot }}
             </div>
         </main>

@@ -25,7 +25,7 @@
             {{ $slot }}
         </div>
 
-        <div class="mt-8 text-center text-sm text-vantage-900/60 font-medium">
+        <div class="mt-8 text-center text-sm text-vantage-200/60 font-medium">
             &copy; {{ date('Y') }} VantageHRIS. All rights reserved.
             <br><br>
             By Ambos, Joshua

@@ -4,31 +4,28 @@ import forms from "@tailwindcss/forms";
 /** @type {import('tailwindcss').Config} */
 export default {
     content: [
-        "./vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php",
-        "./storage/framework/views/*.php",
-        "./resources/views/**/*.blade.php",
+        "./resources/**/*.blade.php",
+        "./resources/**/*.js",
+        "./resources/**/*.vue",
     ],
-
     theme: {
         extend: {
             colors: {
                 vantage: {
-                    50: "#d9ed92", // Lightest Lime Green
-                    100: "#b5e48c",
-                    200: "#99d98c",
-                    300: "#76c893",
-                    400: "#52b69a", // Mid Mint
-                    500: "#34a0a4", // Vibrant Teal
-                    600: "#168aad",
-                    700: "#1a759f",
-                    800: "#1e6091", // Dark Blue
-                    900: "#184e77", // Deepest Navy Blue
+                    DEFAULT: "#06b6d4",
+                    50: "#ecfeff",
+                    100: "#cffafe",
+                    200: "#a5f3fc",
+                    300: "#67e8f9",
+                    400: "#22d3ee",
+                    500: "#06b6d4", // Primary Accent
+                    600: "#0891b2",
+                    700: "#0e7490",
+                    800: "#155e75",
+                    900: "#0f172a", // Sidebar Slate
+                    950: "#020617", // Sidebar Header Dark Slate
+                    bg: "#f8fafc", // Canvas background
                 },
-                // A crisp, neutral background to let the blue/green gradient shine
-                "vantage-bg": "#f8f9fa",
-            },
-            fontFamily: {
-                sans: ["Inter", ...defaultTheme.fontFamily.sans],
             },
         },
     },
