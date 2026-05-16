@@ -51,6 +51,7 @@
                                             class="h-8 w-8 rounded-full bg-vantage-100 text-vantage-800 flex items-center justify-center font-bold text-xs">
                                             {{ substr($employee->first_name, 0, 1) }}{{ substr($employee->last_name, 0, 1) }}
                                         </div>
+
                                         <div class="ml-3">
                                             <div class="text-sm font-medium text-vantage-900">{{ $employee->first_name }}
                                                 {{ $employee->last_name }}
@@ -58,6 +59,7 @@
                                         </div>
                                     </div>
                                 </td>
+
                                 <td class="px-6 py-4 whitespace-nowrap">
                                     <div class="text-sm text-slate-600">{{ $employee->email }}</div>
                                 </td>
@@ -95,7 +97,7 @@
                 </table>
             </div>
 
-            {{-- Optional: Pagination links would go here if you paginate your DB query --}}
+            {{-- Optional: Pagination links --}}
             @if(method_exists($employees, 'links'))
                 <div class="px-6 py-4 border-t border-gray-100">
                     {{ $employees->links() }}
