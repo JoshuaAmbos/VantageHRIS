@@ -31,7 +31,7 @@
         <nav class="flex-1 px-3 py-4 space-y-0.5 overflow-y-auto custom-scrollbar">
             <p class="px-3 text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-3">Workspace</p>
 
-            <!-- Dashboard Node -->
+            <!-- Dashboard Module -->
             <a href="{{ route('dashboard') }}"
                 class="flex items-center px-3 py-2.5 rounded-lg transition-all duration-150 group relative {{ request()->routeIs('dashboard') ? 'bg-slate-800 text-white font-medium' : 'text-slate-400 hover:bg-slate-800/60 hover:text-slate-200' }}">
                 @if(request()->routeIs('dashboard'))
@@ -46,7 +46,7 @@
                 <span class="text-sm">Dashboard</span>
             </a>
 
-            <!-- Employees Node -->
+            <!-- Employees Module -->
             <a href="{{ route('employees.index') }}"
                 class="flex items-center px-3 py-2.5 rounded-lg transition-all duration-150 group relative {{ request()->routeIs('employees.*') ? 'bg-slate-800 text-white font-medium' : 'text-slate-400 hover:bg-slate-800/60 hover:text-slate-200' }}">
                 @if(request()->routeIs('employees.*'))
@@ -61,7 +61,7 @@
                 <span class="text-sm">Employees</span>
             </a>
 
-            <!-- Departments Node -->
+            <!-- Departments Module -->
             <a href="{{ route('departments.index') }}"
                 class="flex items-center px-3 py-2.5 rounded-lg transition-all duration-150 group relative {{ request()->routeIs('departments.*') ? 'bg-slate-800 text-white font-medium' : 'text-slate-400 hover:bg-slate-800/60 hover:text-slate-200' }}">
                 @if(request()->routeIs('departments.*'))
@@ -76,7 +76,7 @@
                 <span class="text-sm">Departments</span>
             </a>
 
-            <!-- Attendances Node -->
+            <!-- Attendances Module -->
             <a href="{{ route('attendances.index') }}"
                 class="flex items-center px-3 py-2.5 rounded-lg transition-all duration-150 group relative {{ request()->routeIs('attendances.*') ? 'bg-slate-800 text-white font-medium' : 'text-slate-400 hover:bg-slate-800/60 hover:text-slate-200' }}">
                 @if(request()->routeIs('attendances.*'))
@@ -89,6 +89,21 @@
                 </svg>
                 <span class="text-sm">Attendances</span>
             </a>
+
+            {{-- Leave Requests Module --}}
+            <a href="{{ route('leave-requests.index') }}"
+                class="flex items-center px-3 py-2.5 rounded-lg transition-all duration-150 group relative {{ request()->routeIs('leave-requests.*') ? 'bg-slate-800 text-white font-medium' : 'text-slate-400 hover:bg-slate-800/60 hover:text-slate-200' }}">
+                @if(request()->routeIs('leave-requests.*'))
+                    <span class="absolute left-0 top-2.5 bottom-2.5 w-1 bg-vantage-500 rounded-r"></span>
+                @endif
+                <svg class="w-[18px] h-[18px] mr-3 transition-colors {{ request()->routeIs('leave-requests.*') ? 'text-vantage-400' : 'text-slate-500 group-hover:text-slate-300' }}"
+                    fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round"
+                        d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"></path>
+                </svg>
+                <span class="text-sm">Leave Requests</span>
+            </a>
+
         </nav>
 
         <!-- FIXED: Re-engineered Profile Footer Pane with Split Inline Utilities -->

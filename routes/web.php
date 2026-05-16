@@ -4,6 +4,7 @@ use App\Http\Controllers\AttendanceController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DepartmentController;
 use App\Http\Controllers\EmployeeController;
+use App\Http\Controllers\LeaveRequestController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 
@@ -93,6 +94,33 @@ Route::middleware(['auth', 'role:admin,hr'])->group(function(){
         Route::delete('/{id}', [AttendanceController::class, 'destroy'])->name('destroy');
     });
 });
+
+// Leave Requests Module (HR, Manager, Employee)
+Route::middleware(['auth', 'role:admin,hr'])->group(function(){
+    Route::prefix('leave-requests')->name('leave-requests.')->group(function () {
+        // Index
+        Route::get('/', [LeaveRequestController::class, 'index'])->name('index');
+
+        // Create
+        Route::get('/create', [LeaveRequestController::class, 'create'])->name('create');
+
+        // Store
+        Route::post('/store', [LeaveRequestController::class, 'store'])->name('store');
+
+        // Show
+        Route::get('/{id}', [LeaveRequestController::class, 'show'])->name('show');
+
+        // Edit
+        Route::get('/{id}/edit', [LeaveRequestController::class, 'edit'])->name('edit');
+
+        // Update
+        Route::patch('/{id}', [LeaveRequestController::class, 'update'])->name('update');
+
+        // Delete
+        Route::delete('/{id}', [LeaveRequestController::class, 'destroy'])->name('destroy');
+    });
+});
+
 
 
 // Profile
