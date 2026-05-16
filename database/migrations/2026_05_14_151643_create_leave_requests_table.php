@@ -20,7 +20,9 @@ return new class extends Migration
             $table->date('start_date');
             $table->date('end_date');
             $table->string('reason');
-            $table->foreignId('approved_by')->constrained('employees', 'id')->cascadeOnDelete();
+            $table->enum('status', [LeaveRequest::STATUS_PENDING, LeaveRequest::STATUS_APPROVED, LeaveRequest::STATUS_REJECTED])
+                ->default(LeaveRequest::STATUS_PENDING);
+            $table->foreignId('approved_by')->nullable()->constrained('employees', 'id')->cascadeOnDelete();
             $table->timestamps();
         });
     }
