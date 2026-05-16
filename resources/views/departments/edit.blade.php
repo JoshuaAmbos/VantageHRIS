@@ -23,6 +23,21 @@
             @error('description') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
             <br>
 
+            <label for="manager_id">Manager</label><br>
+            <select name="manager_id" id="manager_id"
+                class="w-full rounded-lg border-gray-300 shadow-sm focus:border-vantage-500 focus:ring focus:ring-vantage-500/20 transition-colors">
+                <option value="">No Manager Assigned</option>
+                @foreach($employees as $employee)
+                    <option value="{{ $employee->id }}" {{ old('manager_id', $department->manager_id) == $employee->id ? 'selected' : '' }}>
+                        {{ $employee->first_name }} {{ $employee->last_name }}
+                    </option>
+                @endforeach
+            </select>
+
+            <br>
+            @error('manager_id') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
+            <br>
+
             {{-- 3. Status selection (Required by your DepartmentRequest) --}}
             <label for="status">Status</label><br>
             <select name="status" id="status">

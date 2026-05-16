@@ -26,7 +26,7 @@ class DepartmentRequest extends FormRequest
             'name' => 'required|string|max:255',
             'description' => 'required|string|max:255',
             'status' => 'in:active,inactive',
-            // 'manager_id' => 'required|integer' - no employees yet
+            'manager_id' => 'nullable|integer'
         ];
     }
 }

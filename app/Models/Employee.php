@@ -51,6 +51,13 @@ class Employee extends Model
     public function department(): BelongsTo {
         return $this->belongsTo(Department::class);
     }
+    
+    /**
+     * Department(s) this employee manages (if manager).
+     */
+    public function managedDepartments(): HasMany {
+        return $this->hasMany(Department::class, 'manager_id', 'id');
+    }
 
     /**
      * Attendance records of this employee.

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\DepartmentRequest;
 use App\Models\Department;
+use App\Models\Employee;
 use Illuminate\Http\Request;
 
 class DepartmentController extends Controller
@@ -22,7 +23,9 @@ class DepartmentController extends Controller
      */
     public function create()
     {
-        return view('departments.create');
+        $employees = Employee::all();
+        $departments = Department::all();
+        return view('departments.create', compact('employees', 'departments'));
     }
 
     /**
@@ -48,7 +51,8 @@ class DepartmentController extends Controller
     public function edit(string $id)
     {
         $department = Department::findOrFail($id);
-        return view('departments.edit', compact('department'));
+        $employees = Employee::all();
+        return view('departments.edit', compact('department', 'employees'));
     }
 
     /**

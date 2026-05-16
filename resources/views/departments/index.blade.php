@@ -21,8 +21,20 @@
                     <tr>
                         <td class="border p-2">{{ $department->name }}</td>
                         <td class="border p-2">{{ $department->description }}</td>
-                        <td class="border p-2">{{ $department->manager_id ?? 'N/A' }}</td>
-                        <td class="border p-2">{{ $department->status }}</td>
+                        <td class="border p-2">
+                            @if ($department->manager)
+                                {{ $department->manager->first_name }} {{ $department->manager->last_name }}
+                            @else
+                                <span class="text-slate-400 italic">No manager assigned.</span>
+                            @endif
+                        </td>
+                        <td class="border p-2">
+                            @if ($department->status)
+                                {{ str($department->status)->ucfirst() }}
+                            @else
+                                <span class="text-slate-400 italic">Status undefined.</span>
+                            @endif
+                        </td>
                         <td class="border p-2 flex gap-2">
                             {{-- Edit Link --}}
                             <a href="{{ route('departments.edit', $department->id) }}" class="px-2 py-1 rounded text-white"
