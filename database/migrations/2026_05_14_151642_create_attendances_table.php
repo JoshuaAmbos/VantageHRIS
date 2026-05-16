@@ -20,7 +20,7 @@ return new class extends Migration
             $table->time('time_out');
             $table->enum('status', [Attendance::STATUSES])
                 ->default(Attendance::STATUS_PRESENT);
-            $table->string('remarks');
+            $table->string('remarks')->nullable();
             $table->timestamps();
         });
     }

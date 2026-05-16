@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AttendanceController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DepartmentController;
 use App\Http\Controllers\EmployeeController;
@@ -18,51 +19,78 @@ Route::get('/dashboard', [DashboardController::class, 'index'])->middleware(['au
 Route::middleware(['auth', 'role:admin,hr'])->group(function () {
     Route::prefix('departments')->name('departments.')->group(function() {
        // Index
-       Route::get('/', [DepartmentController::class, 'index'])->name('index');
-       
+        Route::get('/', [DepartmentController::class, 'index'])->name('index');
+
        // Create
-       Route::get('/create', [DepartmentController::class, 'create'])->name('create');
+        Route::get('/create', [DepartmentController::class, 'create'])->name('create');
 
        // Store
-       Route::post('/', [DepartmentController::class, 'store'])->name('store');
+        Route::post('/', [DepartmentController::class, 'store'])->name('store');
 
        // Show
-       Route::get('/{id}', [DepartmentController::class, 'show'])->name('show');
+        Route::get('/{id}', [DepartmentController::class, 'show'])->name('show');
 
        // Edit
-       Route::get('/{id}/edit', [DepartmentController::class, 'edit'])->name('edit');
+        Route::get('/{id}/edit', [DepartmentController::class, 'edit'])->name('edit');
 
        // Update
-       Route::patch('/{id}', [DepartmentController::class, 'update'])->name('update');
+        Route::patch('/{id}', [DepartmentController::class, 'update'])->name('update');
 
        // Destroy
-       Route::delete('/{id}', [DepartmentController::class, 'destroy'])->name('destroy');
+        Route::delete('/{id}', [DepartmentController::class, 'destroy'])->name('destroy');
     });
 });
 
 // Employees Module (Admin, HR)
 Route::middleware(['auth', 'role:admin,hr'])->group(function () {
     Route::prefix('employees')->name('employees.')->group(function() {
-    // Index
-    Route::get('/', [EmployeeController::class, 'index'])->name('index');
-    
-    // Create
-    Route::get('/create', [EmployeeController::class, 'create'])->name('create');
-    
-    // Store
-    Route::post('/store', [EmployeeController::class, 'store'])->name('store');
+        // Index
+        Route::get('/', [EmployeeController::class, 'index'])->name('index');
 
-    // Show
-    Route::get('/{id}', [EmployeeController::class, 'show'])->name('show');
+        // Create
+        Route::get('/create', [EmployeeController::class, 'create'])->name('create');
 
-    // Edit
-   Route::get('/{id}/edit', [EmployeeController::class, 'edit'])->name('edit');
+        // Store
+        Route::post('/store', [EmployeeController::class, 'store'])->name('store');
 
-    // Update
-    Route::patch('/{id}', [EmployeeController::class, 'update'])->name('update');
+        // Show
+        Route::get('/{id}', [EmployeeController::class, 'show'])->name('show');
 
-    // Destroy
-    Route::delete('/{id}', [EmployeeController::class, 'destroy'])->name('destroy');
+        // Edit
+        Route::get('/{id}/edit', [EmployeeController::class, 'edit'])->name('edit');
+
+        // Update
+        Route::patch('/{id}', [EmployeeController::class, 'update'])->name('update');
+
+        // Destroy
+        Route::delete('/{id}', [EmployeeController::class, 'destroy'])->name('destroy');
+    });
+});
+
+// TODO : VERIFY RBAC
+// Attendances Module (HR, Manager, Employee)
+Route::middleware(['auth', 'role:admin,hr'])->group(function(){
+    Route::prefix('attendances')->name('attendances.')->group(function() {
+        // Index
+        Route::get('/', [AttendanceController::class, 'index'])->name('index');
+
+        // Create
+        Route::get('/create', [AttendanceController::class, 'create'])->name('create');
+
+        // Store
+        Route::post('/store', [AttendanceController::class, 'store'])->name('store');
+
+        // Show
+        Route::get('/{id}', [AttendanceController::class, 'show'])->name('show');
+
+        // Edit
+        Route::get('/{id}/edit', [AttendanceController::class, 'edit'])->name('edit');
+
+        // Update
+        Route::patch('/{id}', [AttendanceController::class, 'update'])->name('update');
+
+        // Destroy
+        Route::delete('/{id}', [AttendanceController::class, 'destroy'])->name('destroy');
     });
 });
 

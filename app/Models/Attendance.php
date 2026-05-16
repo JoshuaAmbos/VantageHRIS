@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Support\Facades\DB;
 
 class Attendance extends Model
 {
@@ -32,11 +33,48 @@ class Attendance extends Model
     ];
 
     /**
+     * Retrive enum values for a specific column.
+     * @param string column
+     * @return array
+     */
+    public static function getEnumValues(string $column): array
+    {
+        // 1. Fetch the target table string name (attendances)
+        $table = (new static)->getTable();
+
+        // 2. Pass the string query directly to DB::select() without DB::raw()
+        $result = DB::select("SHOW COLUMNS FROM {$table} WHERE Field = '{$column}'");
+
+        // Safety check: if column doesn't exist, return an empty array to prevent null pointer crashes
+        if (empty($result)) {
+            return [];
+        }
+
+        $type = $result[0]->Type;
+
+        // 3. Parse the string structure: enum('present','absent','leave')
+        preg_match('/^enum\((.*)\)$/', $type, $matches);
+        
+        if (!isset($matches[1])) {
+            return [];
+        }
+
+        $values = [];
+        foreach (explode(',', $matches[1]) as $value) {
+            $values[] = trim($value, "'");
+        }
+
+        return $values;
+    }
+    
+
+    /**
      * Employee this record belongs to.
      */
     public function employee(): BelongsTo {
         return $this->belongsTo(Employee::class);
     }
+
     
     
 }

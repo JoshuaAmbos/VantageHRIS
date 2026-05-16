@@ -62,7 +62,15 @@
                 </div>
             </div>
             <p class="text-3xl font-bold text-vantage-900">{{ $totalDepartments }}</p>
-            <p class="text-xs text-slate-400 mt-2 font-medium">Across all active branches</p>
+            <p class="text-xs text-vantage-500 mt-2 font-medium flex items-center">
+                <svg class="w-3 h-3 mr-1 opacity-80" fill="none" stroke="currentColor" stroke-width="2"
+                    viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round"
+                        d="M3.75 21h16.5M4.5 3h15M5.25 21V3m13.5 18V3M12 6v1.5m0 3V12m0 3v1.5m0 3V21m-4.5-13.5h.008v.008H7.5V7.5Zm0 3h.008v.008H7.5v-.008Zm0 3h.008v.008H7.5v-.008Zm9 0h.008v.008h-.008v-.008Zm0-3h.008v.008h-.008v-.008Zm0-3h.008v.008h-.008v-.008Z">
+                    </path>
+                </svg>
+                {{ $numActiveDepartments }} active department(s)
+            </p>
         </div>
 
         <!-- Metric Card 3: Pending Actions -->

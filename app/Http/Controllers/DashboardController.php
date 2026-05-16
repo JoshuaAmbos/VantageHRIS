@@ -15,11 +15,12 @@ class DashboardController extends Controller
         $numEmployeesMonth = Employee::whereMonth('created_at', Carbon::now()->month)->whereYear('created_at', Carbon::now()->year)->count();
 
         $totalDepartments = Department::count();
-
+        $numActiveDepartments = Department::where('status', 'active')->count();
 
         return view('dashboard', compact(
             'totalEmployees',
             'numEmployeesMonth',
-            'totalDepartments'));
+            'totalDepartments',
+            'numActiveDepartments'));
     }
 }

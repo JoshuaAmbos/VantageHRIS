@@ -11,21 +11,31 @@
                 </div>
 
                 <!-- Navigation Links -->
+                {{-- Dashboard --}}
                 <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
                     <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
                         {{ __('Dashboard') }}
                     </x-nav-link>
                 </div>
 
+                {{-- Departments --}}
                 <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
                     <x-nav-link :href="route('departments.index')" :active="request()->routeIs('departments.*')">
                         {{ __('Departments') }}
                     </x-nav-link>
                 </div>
 
+                {{-- Employees --}}
                 <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
                     <x-nav-link :href="route('employees.index')" :active="request()->routeIs('employees.*')">
                         {{ __('Employees') }}
+                    </x-nav-link>
+                </div>
+
+                {{-- Attendances --}}
+                <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
+                    <x-nav-link :href="route('attendances.index')" :active="request()->routeIs('attendances.*')">
+                        {{ __('Attendances') }}
                     </x-nav-link>
                 </div>
             </div>
