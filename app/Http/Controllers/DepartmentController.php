@@ -14,7 +14,15 @@ class DepartmentController extends Controller
      */
     public function index()
     {
-        $departments = Department::all();
+        $user = auth()->user();
+
+        if ($user->role === 'manager') {
+            $managerDeptId = $user->employee->department_id ?? null;
+            $departments = Department::where('id', $managerDeptId)->get();
+        } else {
+            $departments = Department::all();
+        }
+
         return view('departments.index', compact('departments'));
     }
 

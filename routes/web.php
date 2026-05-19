@@ -7,44 +7,45 @@ use App\Http\Controllers\EmployeeController;
 use App\Http\Controllers\LeaveRequestController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\UserController;
-
 use Illuminate\Support\Facades\Route;
 
-// Login
+// Login Route
 Route::get('/', function () {
     return view('auth/login');
 });
 
-// Dashboard Module
-Route::get('/dashboard', [DashboardController::class, 'index'])->middleware(['auth', 'verified'])->name('dashboard');
+// Dashboard Module (Accessible by all verified authenticated users)
+Route::get('/dashboard', [DashboardController::class, 'index'])
+    ->middleware(['auth', 'verified'])
+    ->name('dashboard');
 
-// Departments Module (Admin, HR)
-Route::middleware(['auth', 'role:admin,hr'])->group(function () {
+// Departments Module (Admin, HR Staff, and Managers)
+Route::middleware(['auth', 'role:admin,hr,manager'])->group(function () {
     Route::prefix('departments')->name('departments.')->group(function() {
-       // Index
+        // Index
         Route::get('/', [DepartmentController::class, 'index'])->name('index');
 
-       // Create
+        // Create
         Route::get('/create', [DepartmentController::class, 'create'])->name('create');
 
-       // Store
+        // Store
         Route::post('/', [DepartmentController::class, 'store'])->name('store');
 
-       // Show
+        // Show
         Route::get('/{id}', [DepartmentController::class, 'show'])->name('show');
 
-       // Edit
+        // Edit
         Route::get('/{id}/edit', [DepartmentController::class, 'edit'])->name('edit');
 
-       // Update
+        // Update
         Route::patch('/{id}', [DepartmentController::class, 'update'])->name('update');
 
-       // Destroy
+        // Destroy
         Route::delete('/{id}', [DepartmentController::class, 'destroy'])->name('destroy');
     });
 });
 
-// Employees Module (Admin, HR)
+// Employees Module (Admin and HR Staff only)
 Route::middleware(['auth', 'role:admin,hr'])->group(function () {
     Route::prefix('employees')->name('employees.')->group(function() {
         // Index
@@ -70,9 +71,8 @@ Route::middleware(['auth', 'role:admin,hr'])->group(function () {
     });
 });
 
-// TODO : VERIFY RBAC
-// Attendances Module (HR, Manager, Employee)
-Route::middleware(['auth', 'role:admin,hr'])->group(function(){
+// Attendances Module (Accessible by Admin, HR, Manager, and Employee)
+Route::middleware(['auth', 'role:admin,hr,manager,employee'])->group(function(){
     Route::prefix('attendances')->name('attendances.')->group(function() {
         // Index
         Route::get('/', [AttendanceController::class, 'index'])->name('index');
@@ -97,8 +97,8 @@ Route::middleware(['auth', 'role:admin,hr'])->group(function(){
     });
 });
 
-// Leave Requests Module (Admin, HR, Manager, Employee)
-Route::middleware(['auth', 'role:admin,hr'])->group(function(){
+// Leave Requests Module (Accessible by Admin, HR, Manager, and Employee)
+Route::middleware(['auth', 'role:admin,hr,manager,employee'])->group(function(){
     Route::prefix('leave-requests')->name('leave-requests.')->group(function () {
         // Index
         Route::get('/', [LeaveRequestController::class, 'index'])->name('index');
@@ -123,11 +123,9 @@ Route::middleware(['auth', 'role:admin,hr'])->group(function(){
     });
 });
 
-// Users Module (Admin)
+// Users Module (Admin and HR Staff only)
 Route::middleware(['auth', 'role:admin,hr'])->group(function () {
-    
     Route::prefix('users')->name('users.')->group(function () {
-        
         // Index
         Route::get('/', [UserController::class, 'index'])->name('index');
 
@@ -148,13 +146,10 @@ Route::middleware(['auth', 'role:admin,hr'])->group(function () {
 
         // Destroy
         Route::delete('/{id}', [UserController::class, 'destroy'])->name('destroy');
-        
     });
 });
 
-
-
-// Profile
+// Profile Management (Accessible by any authenticated user)
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');

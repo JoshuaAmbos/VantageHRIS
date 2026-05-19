@@ -15,11 +15,21 @@ class LeaveRequestController extends Controller
      */
     public function index()
     {
-        $leaveRequests = LeaveRequest::orderByDesc('created_at')->get();
-        $employees = Employee::all();
-        $message = "No leave requests found.";
+        $user = auth()->user();
 
-        return view('leave-requests.index', compact('leaveRequests', 'employees', 'message'));
+        if ($user->role === 'employee') {
+            $leaveRequests = LeaveRequest::where('employee_id', $user->employee->id)->get();
+        } elseif ($user->role === 'manager') {
+            $managerDeptId = $user->employee->department_id;
+            $leaveRequests = LeaveRequest::whereHas('submittedBy', function ($query) use ($managerDeptId) {
+                $query->where('department_id', $managerDeptId);
+            })->with('submittedBy')->get();
+        } else {
+
+            $leaveRequests = LeaveRequest::with('submittedBy')->get();
+        }
+
+        return view('leave-requests.index', compact('leaveRequests'));
     }
 
     /**

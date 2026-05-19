@@ -14,8 +14,21 @@ class AttendanceController extends Controller
      */
     public function index()
     {
-        $attendances = Attendance::orderByDesc('created_at')->get();
-        
+        $user = auth()->user();
+
+        if ($user->role === 'employee') {
+            $attendances = Attendance::where('employee_id', $user->employee->id)->get();
+        } elseif ($user->role === 'manager') {
+            $managerDeptId = $user->employee->department_id;
+            $attendances = Attendance::whereHas('employee', function ($query) use ($managerDeptId) {
+                $query->where('department_id', $managerDeptId);
+            })->with('employee')->get();
+        } else {
+
+            // Admin & HR see global attendance 
+            $attendances = Attendance::with('employee.department')->get();
+        }
+
         return view('attendances.index', compact('attendances'));
     }
 
