@@ -6,6 +6,8 @@ use App\Http\Controllers\DepartmentController;
 use App\Http\Controllers\EmployeeController;
 use App\Http\Controllers\LeaveRequestController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\UserController;
+
 use Illuminate\Support\Facades\Route;
 
 // Login
@@ -118,6 +120,35 @@ Route::middleware(['auth', 'role:admin,hr'])->group(function(){
 
         // Delete
         Route::delete('/{id}', [LeaveRequestController::class, 'destroy'])->name('destroy');
+    });
+});
+
+// Users Module (Admin)
+Route::middleware(['auth', 'role:admin,hr'])->group(function () {
+    
+    Route::prefix('users')->name('users.')->group(function () {
+        
+        // Index
+        Route::get('/', [UserController::class, 'index'])->name('index');
+
+        // Create
+        Route::get('/create', [UserController::class, 'create'])->name('create');
+
+        // Store
+        Route::post('/', [UserController::class, 'store'])->name('store');
+
+        // Show
+        Route::get('/{user}', [UserController::class, 'show'])->name('show');
+
+        // Edit
+        Route::get('/{user}/edit', [UserController::class, 'edit'])->name('edit');
+
+        // Update
+        Route::put('/{user}', [UserController::class, 'update'])->name('update');
+
+        // Destroy
+        Route::delete('/{user}', [UserController::class, 'destroy'])->name('destroy');
+        
     });
 });
 

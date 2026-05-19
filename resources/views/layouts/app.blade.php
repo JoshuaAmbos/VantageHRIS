@@ -8,14 +8,20 @@
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 
-<body
+<body x-data="{ mobileMenuOpen: false }"
     class="font-sans antialiased bg-slate-50 text-slate-900 h-full flex overflow-hidden selection:bg-vantage-500 selection:text-white">
 
-    <!-- Premium Sidebar Context Container -->
-    <aside class="w-64 bg-slate-900 text-slate-200 flex-shrink-0 flex flex-col border-r border-slate-800 z-20 relative">
+    <div x-show="mobileMenuOpen" x-transition:enter="transition-opacity ease-linear duration-300"
+        x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100"
+        x-transition:leave="transition-opacity ease-linear duration-300" x-transition:leave-start="opacity-100"
+        x-transition:leave-end="opacity-0" @click="mobileMenuOpen = false"
+        class="fixed inset-0 bg-slate-900/60 z-30 lg:hidden" style="display: none;">
+    </div>
 
-        <!-- Brand Identity Container -->
-        <div class="h-16 flex items-center px-6 border-b border-slate-800 bg-slate-950/40">
+    <aside :class="mobileMenuOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'"
+        class="w-64 bg-slate-900 text-slate-200 flex-shrink-0 flex flex-col border-r border-slate-800 z-40 fixed inset-y-0 left-0 lg:static transform transition-transform duration-300 ease-in-out">
+
+        <div class="h-16 flex items-center justify-between px-6 border-b border-slate-800 bg-slate-950/40">
             <div class="flex items-center space-x-2.5">
                 <div
                     class="w-8 h-8 bg-gradient-to-br from-vantage-400 to-vantage-600 rounded-lg flex items-center justify-center shadow-lg shadow-vantage-900/40">
@@ -25,11 +31,16 @@
                     Vantage<span class="text-vantage-400 font-medium">HRIS</span>
                 </span>
             </div>
+
+            <button @click="mobileMenuOpen = false"
+                class="lg:hidden p-1 rounded-md text-slate-400 hover:text-white focus:outline-none">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"></path>
+                </svg>
+            </button>
         </div>
 
-        <!-- Scrollable Navigation Matrix -->
         <nav class="flex-1 px-3 py-4 space-y-0.5 overflow-y-auto custom-scrollbar">
-            <p class="px-3 text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-3">Workspace</p>
 
             <!-- Dashboard Module -->
             <a href="{{ route('dashboard') }}"
@@ -40,11 +51,15 @@
                 <svg class="w-[18px] h-[18px] mr-3 transition-colors {{ request()->routeIs('dashboard') ? 'text-vantage-400' : 'text-slate-500 group-hover:text-slate-300' }}"
                     fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round"
-                        d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z">
+                        d="M4 5a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1H5a1 1 0 01-1-1V5zM14 5a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1h-4a1 1 0 01-1-1V5zM4 15a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1H5a1 1 0 01-1-1v-4zM14 15a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1h-4a1 1 0 01-1-1v-4z">
                     </path>
                 </svg>
                 <span class="text-sm">Dashboard</span>
             </a>
+
+            <div class="pt-4 pb-1">
+                <p class="px-3 text-[10px] font-bold text-slate-500 uppercase tracking-widest">Core HR</p>
+            </div>
 
             <!-- Employees Module -->
             <a href="{{ route('employees.index') }}"
@@ -54,9 +69,11 @@
                 @endif
                 <svg class="w-[18px] h-[18px] mr-3 transition-colors {{ request()->routeIs('employees.*') ? 'text-vantage-400' : 'text-slate-500 group-hover:text-slate-300' }}"
                     fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round"
-                        d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2">
                     </path>
+                    <circle cx="9" cy="7" r="4" stroke-linecap="round" stroke-linejoin="round"></circle>
+                    <path stroke-linecap="round" stroke-linejoin="round"
+                        d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"></path>
                 </svg>
                 <span class="text-sm">Employees</span>
             </a>
@@ -76,6 +93,10 @@
                 <span class="text-sm">Departments</span>
             </a>
 
+            <div class="pt-4 pb-1">
+                <p class="px-3 text-[10px] font-bold text-slate-500 uppercase tracking-widest">Time &amp; Access</p>
+            </div>
+
             <!-- Attendances Module -->
             <a href="{{ route('attendances.index') }}"
                 class="flex items-center px-3 py-2.5 rounded-lg transition-all duration-150 group relative {{ request()->routeIs('attendances.*') ? 'bg-slate-800 text-white font-medium' : 'text-slate-400 hover:bg-slate-800/60 hover:text-slate-200' }}">
@@ -85,12 +106,12 @@
                 <svg class="w-[18px] h-[18px] mr-3 transition-colors {{ request()->routeIs('attendances.*') ? 'text-vantage-400' : 'text-slate-500 group-hover:text-slate-300' }}"
                     fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round"
-                        d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"></path>
+                        d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                 </svg>
                 <span class="text-sm">Attendances</span>
             </a>
 
-            {{-- Leave Requests Module --}}
+            <!-- Leave Requests Module -->
             <a href="{{ route('leave-requests.index') }}"
                 class="flex items-center px-3 py-2.5 rounded-lg transition-all duration-150 group relative {{ request()->routeIs('leave-requests.*') ? 'bg-slate-800 text-white font-medium' : 'text-slate-400 hover:bg-slate-800/60 hover:text-slate-200' }}">
                 @if(request()->routeIs('leave-requests.*'))
@@ -99,17 +120,29 @@
                 <svg class="w-[18px] h-[18px] mr-3 transition-colors {{ request()->routeIs('leave-requests.*') ? 'text-vantage-400' : 'text-slate-500 group-hover:text-slate-300' }}"
                     fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round"
-                        d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"></path>
+                        d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z">
+                    </path>
                 </svg>
                 <span class="text-sm">Leave Requests</span>
             </a>
 
+            <!-- Users Module -->
+            <a href="{{ route('users.index') }}"
+                class="flex items-center px-3 py-2.5 rounded-lg transition-all duration-150 group relative {{ request()->routeIs('users.*') ? 'bg-slate-800 text-white font-medium' : 'text-slate-400 hover:bg-slate-800/60 hover:text-slate-200' }}">
+                @if(request()->routeIs('users.*'))
+                    <span class="absolute left-0 top-2.5 bottom-2.5 w-1 bg-vantage-500 rounded-r"></span>
+                @endif
+                <svg class="w-[18px] h-[18px] mr-3 transition-colors {{ request()->routeIs('users.*') ? 'text-vantage-400' : 'text-slate-500 group-hover:text-slate-300' }}"
+                    fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round"
+                        d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z">
+                    </path>
+                </svg>
+                <span class="text-sm">Users</span>
+            </a>
         </nav>
 
-        <!-- FIXED: Re-engineered Profile Footer Pane with Split Inline Utilities -->
         <div class="p-4 bg-slate-950/30 border-t border-slate-800/60 flex flex-col space-y-3">
-
-            <!-- User Info Details Card Row -->
             <div class="flex items-center space-x-3 px-1">
                 <div
                     class="w-9 h-9 rounded-full bg-slate-800 border border-slate-700 text-slate-200 flex items-center justify-center text-xs font-bold ring-2 ring-slate-900">
@@ -123,9 +156,7 @@
                 </div>
             </div>
 
-            <!-- Action Button Split Utility Row -->
             <div class="grid grid-cols-2 gap-2">
-                <!-- Profile Link Button -->
                 <a href="{{ route('profile.edit') }}"
                     class="flex items-center justify-center space-x-1.5 py-2 rounded-md bg-slate-800/40 text-[11px] font-medium text-slate-400 hover:bg-slate-800 hover:text-slate-200 border border-slate-800/80 hover:border-slate-700 transition-all duration-150 text-center">
                     <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
@@ -136,7 +167,6 @@
                     <span>Settings</span>
                 </a>
 
-                <!-- Sign Out POST Form Button -->
                 <form method="POST" action="{{ route('logout') }}" class="inline-block">
                     @csrf
                     <button type="submit"
@@ -153,19 +183,21 @@
         </div>
     </aside>
 
-    <!-- Main Workspace Surface -->
-    <div class="flex-1 flex flex-col min-w-0 bg-slate-50">
-
-        <!-- Shared Header Workspace Bar -->
+    <div class="flex-1 flex flex-col min-w-0 bg-slate-50 ml-0">
         <header
-            class="h-16 bg-white border-b border-slate-200/80 flex items-center px-8 justify-between relative z-10 shadow-xs">
-            <div class="flex items-center">
+            class="h-16 bg-white border-b border-slate-200/80 flex items-center px-4 sm:px-8 justify-between relative z-10 shadow-xs">
+            <div class="flex items-center space-x-3">
+                <button @click="mobileMenuOpen = true"
+                    class="p-2 rounded-lg text-slate-500 hover:bg-slate-100 lg:hidden focus:outline-none">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16"></path>
+                    </svg>
+                </button>
                 <h2 class="text-base font-bold text-slate-900 tracking-tight">
                     {{ $header ?? 'Overview' }}
                 </h2>
             </div>
 
-            <!-- Contextual Operations Pane -->
             <div class="flex items-center space-x-4">
                 <div
                     class="hidden sm:flex items-center text-xs font-semibold text-slate-600 bg-slate-100 border border-slate-200 px-3 py-1.5 rounded-md shadow-xs">
@@ -180,8 +212,7 @@
             </div>
         </header>
 
-        <!-- Viewport Scrollable Execution Engine Slot -->
-        <main class="flex-1 overflow-y-auto p-8 bg-slate-50/50">
+        <main class="flex-1 overflow-y-auto p-4 sm:p-8 bg-slate-50/50">
             <div class="max-w-7xl mx-auto">
                 {{ $slot }}
             </div>
