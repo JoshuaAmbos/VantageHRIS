@@ -95,7 +95,7 @@ Route::middleware(['auth', 'role:admin,hr'])->group(function(){
     });
 });
 
-// Leave Requests Module (HR, Manager, Employee)
+// Leave Requests Module (Admin, HR, Manager, Employee)
 Route::middleware(['auth', 'role:admin,hr'])->group(function(){
     Route::prefix('leave-requests')->name('leave-requests.')->group(function () {
         // Index

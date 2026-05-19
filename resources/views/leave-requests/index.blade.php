@@ -1,6 +1,6 @@
 <x-app-layout>
     <x-slot name="header">
-        {{ __('Leave Requests') }}
+        {{ __('Leave Requests Directory') }}
     </x-slot>
 
     <div class="mt-6">
@@ -33,11 +33,7 @@
 
                             <th scope="col"
                                 class="px-6 py-4 text-left text-xs font-bold text-vantage-800 uppercase tracking-wider">
-                                Start Date</th>
-
-                            <th scope="col"
-                                class="px-6 py-4 text-left text-xs font-bold text-vantage-800 uppercase tracking-wider">
-                                End Date</th>
+                                Duration</th>
 
                             <th scope="col"
                                 class="px-6 py-4 text-left text-xs font-bold text-vantage-800 uppercase tracking-wider">
@@ -80,11 +76,17 @@
                                 </td>
 
                                 <td class="px-6 py-4 whitespace-nowrap">
-                                    <div class="text-sm text-gray-600">{{ $request->start_date }}</div>
-                                </td>
-
-                                <td class="px-6 py-4 whitespace-nowrap">
-                                    <div class="text-sm text-gray-600">{{ $request->end_date }}</div>
+                                    <div class="flex items-center space-x-2.5">
+                                        <div class="flex flex-col">
+                                            <span class="text-xs font-semibold text-slate-700 tracking-tight">
+                                                {{ \Carbon\Carbon::parse($request->start_date)->format('M j, Y') }}
+                                            </span>
+                                            <span
+                                                class="text-[10px] text-slate-400 font-medium tracking-wide flex items-center mt-0.5">
+                                                to {{ \Carbon\Carbon::parse($request->end_date)->format('M j, Y') }}
+                                            </span>
+                                        </div>
+                                    </div>
                                 </td>
 
                                 <td class="px-6 py-4 whitespace-nowrap">
@@ -104,9 +106,12 @@
 
                                 {{-- Actions --}}
                                 <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                                    <div class="flex items-center justify-end gap-2">
-                                        <a href="{{ route('leave-requests.show', $request->id) }}"
+                                    <div class="flex items-start justify-end gap-2">
+
+                                        {{-- <a href="{{ route('leave-requests.show', $request->id) }}"
                                             class="text-vantage-600 hover:text-vantage-900 bg-vantage-50 hover:bg-vantage-100 px-3 py-1 rounded transition-colors">View</a>
+                                        --}}
+
                                         <a href="{{ route('leave-requests.edit', $request->id) }}"
                                             class="text-slate-600 hover:text-vantage-800 bg-gray-100 hover:bg-gray-200 px-3 py-1 rounded transition-colors">Edit</a>
 

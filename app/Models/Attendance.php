@@ -39,10 +39,10 @@ class Attendance extends Model
      */
     public static function getEnumValues(string $column): array
     {
-        // 1. Fetch the target table string name (attendances)
+        // Fetch the target table string name
         $table = (new static)->getTable();
 
-        // 2. Pass the string query directly to DB::select() without DB::raw()
+        // Pass the string query directly to DB::select() without DB::raw()
         $result = DB::select("SHOW COLUMNS FROM {$table} WHERE Field = '{$column}'");
 
         // Safety check: if column doesn't exist, return an empty array to prevent null pointer crashes
@@ -52,7 +52,7 @@ class Attendance extends Model
 
         $type = $result[0]->Type;
 
-        // 3. Parse the string structure: enum('present','absent','leave')
+        //  Parse the string structure
         preg_match('/^enum\((.*)\)$/', $type, $matches);
         
         if (!isset($matches[1])) {

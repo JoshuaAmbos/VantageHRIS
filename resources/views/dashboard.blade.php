@@ -73,7 +73,7 @@
             </p>
         </div>
 
-        <!-- Metric Card 3: Pending Actions -->
+        <!-- Leave Requests -->
         <div
             class="bg-white rounded-xl shadow-sm border border-gray-100 p-6 hover:shadow-md transition-shadow duration-200">
             <div class="flex items-center justify-between mb-4">
@@ -87,13 +87,13 @@
                     </svg>
                 </div>
             </div>
-            <p class="text-3xl font-bold text-vantage-900">--</p>
+            <p class="text-3xl font-bold text-vantage-900">{{ $totalRequests }}</p>
             <p class="text-xs text-amber-500 mt-2 font-medium flex items-center">
                 <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                         d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                 </svg>
-                -- pending HR approval
+                {{ $pendingRequests }} pending HR approval
             </p>
         </div>
 
