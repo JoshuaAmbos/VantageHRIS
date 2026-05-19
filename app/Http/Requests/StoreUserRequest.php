@@ -8,7 +8,7 @@ use Illuminate\Validation\Rule;
 
 use App\Models\User;
 
-class UserRequest extends FormRequest
+class StoreUserRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.

@@ -95,6 +95,6 @@ class LeaveRequest extends Model
      * Manager employee that approved this request.
      */
     public function approvedBy(): BelongsTo {
-        return $this->belongsTo(Employee::class);
+        return $this->belongsTo(Employee::class, 'approved_by', 'id');
     }
 }

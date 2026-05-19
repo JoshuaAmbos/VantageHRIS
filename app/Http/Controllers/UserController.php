@@ -2,12 +2,13 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\UserRequest;
+use App\Http\Requests\StoreUserRequest;
+use App\Http\Requests\UpdateUserRequest;
 use App\Models\User;
 use App\Models\Employee;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\DB;
-
+use Illuminate\Support\Arr;
 use Illuminate\Http\RedirectResponse;
 
 class UserController extends Controller
@@ -27,7 +28,6 @@ class UserController extends Controller
      */
     public function create()
     {
-        // Fetch only employees who DO NOT have a user account linked yet
         $unassignedEmployees = Employee::whereNull('user_id')->get();
 
         // Roles
@@ -39,17 +39,14 @@ class UserController extends Controller
     /**
      * Store a newly created system user account in storage.
      */
-    public function store(UserRequest $request)
+    public function store(StoreUserRequest $request)
     {
         $validated = $request->validated();
 
-        // Use a database transaction to ensure BOTH records update successfully together
         DB::transaction(function () use ($validated) {
             
-            // Fetch the active employee record targeted by the admin
             $employee = Employee::findOrFail($validated['employee_id']);
 
-            // Create the new authentication user account row
             $user = User::create([
                 'name'     => $employee->first_name . ' ' . $employee->last_name,
                 'email'    => $validated['email'],
@@ -57,7 +54,6 @@ class UserController extends Controller
                 'role'     => $validated['role'],
             ]);
 
-            // Connect the inverse relationship link back to the employee
             $employee->update([
                 'user_id' => $user->id
             ]);
@@ -68,13 +64,11 @@ class UserController extends Controller
 
     /**
      * Remove the specified user account from storage.
-     * 
-     * @param  User  $user  -> Optimized using implicit route-model binding
-     * @return RedirectResponse
      */
-    public function destroy(User $user): RedirectResponse
+    public function destroy(string $id)
     {
-        // Check if this user is linked to an employee profile
+        $user = User::findOrFail($id);
+
         if ($user->employee) {
             $user->employee->update([
                 'user_id' => null
@@ -85,4 +79,30 @@ class UserController extends Controller
 
         return redirect()->route('users.index')->with('success', 'System account revoked successfully!');
     }
+
+    public function edit(string $id)
+    {
+        $user = User::findOrFail($id);
+        $roles = User::getEnumValues('role');
+
+        return view('users.edit', compact('user', 'roles'));
+    }
+
+    public function update(UpdateUserRequest $request, string $id): RedirectResponse
+    {
+        $user = User::findOrFail($id);
+
+        $validatedData = $request->validated();
+
+        if (!empty($validatedData['password'])) {
+            $validatedData['password'] = Hash::make($validatedData['password']);
+        } else {
+            $validatedData = Arr::except($validatedData, ['password', 'password_confirmation']);
+        }
+
+        $user->update($validatedData);
+
+        return redirect()->route('users.index')->with('success', 'User account records updated successfully!');
+    }
+
 }

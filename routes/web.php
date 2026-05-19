@@ -138,16 +138,16 @@ Route::middleware(['auth', 'role:admin,hr'])->group(function () {
         Route::post('/', [UserController::class, 'store'])->name('store');
 
         // Show
-        Route::get('/{user}', [UserController::class, 'show'])->name('show');
+        Route::get('/{id}', [UserController::class, 'show'])->name('show');
 
         // Edit
-        Route::get('/{user}/edit', [UserController::class, 'edit'])->name('edit');
+        Route::get('/{id}/edit', [UserController::class, 'edit'])->name('edit');
 
         // Update
-        Route::put('/{user}', [UserController::class, 'update'])->name('update');
+        Route::put('/{id}', [UserController::class, 'update'])->name('update');
 
         // Destroy
-        Route::delete('/{user}', [UserController::class, 'destroy'])->name('destroy');
+        Route::delete('/{id}', [UserController::class, 'destroy'])->name('destroy');
         
     });
 });

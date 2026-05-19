@@ -152,7 +152,8 @@
                     <p class="text-xs font-semibold truncate text-slate-100 leading-none mb-1">
                         {{ Auth::user()->name ?? 'Administrator' }}
                     </p>
-                    <p class="text-[10px] text-slate-500 font-medium tracking-wide">System Admin</p>
+                    <p class="text-[10px] text-slate-500 font-medium tracking-wide">
+                        {{ str(Auth::user()->role)->title() }}</p>
                 </div>
             </div>
 

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Department;
 use App\Models\LeaveRequest;
+use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 
@@ -27,6 +28,8 @@ class DashboardController extends Controller
         // Attendances
         //
 
+        // Users
+        $totalUsers = User::count();
         
         return view('dashboard', compact(
             'totalEmployees',
@@ -34,6 +37,9 @@ class DashboardController extends Controller
             'totalDepartments',
             'numActiveDepartments',
             'totalRequests',
-            'pendingRequests',));
+            'pendingRequests',
+            'totalUsers',
+            
+            ));
     }
 }

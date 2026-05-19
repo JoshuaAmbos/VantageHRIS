@@ -100,8 +100,14 @@
                                     </span>
                                 </td>
 
-                                <td class="px-6 py-4 whitespace-nowrap">
-                                    <div class="text-sm text-gray-600">{{ $request->approvedBy ?? 'N/A' }}</div>
+                                <td>
+                                    <div class="text-sm text-gray-600">
+                                        @if($request->approvedBy)
+                                            {{ $request->approvedBy->first_name }} {{ $request->approvedBy->last_name }}
+                                        @else
+                                            <span class="text-sm text-gray-600">N/A</span>
+                                        @endif
+                                    </div>
                                 </td>
 
                                 {{-- Actions --}}
