@@ -3,91 +3,100 @@
         {{ __('Employee Directory') }}
     </x-slot>
 
-    <div class="mt-6">
-        <!-- Table Header & Actions -->
-        <div class="flex justify-between items-center mb-4">
-            <h3 class="text-lg font-bold text-vantage-900">All Employees</h3>
+    <div class="mt-6 px-2 sm:px-0">
+        <h3 class="text-xl font-bold text-[#081a2b] mb-6 tracking-tight">All Employees</h3>
+
+        <div class="flex flex-col sm:flex-row justify-between items-stretch sm:items-center gap-4 mb-6">
+            {{-- Reusable Search Bar Component --}}
+            <div class="w-full sm:max-w-xs">
+                <x-search-bar :action="route('employees.index')" :value="$search" placeholder="Search employees..." />
+            </div>
+
             <a href="{{ route('employees.create') }}"
-                class="inline-flex items-center px-4 py-2 bg-vantage-800 text-white text-sm font-bold rounded-lg shadow-sm hover:bg-vantage-900 transition-colors">
-                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+                class="inline-flex items-center justify-center px-4 py-2.5 bg-[#2982d6] hover:bg-[#2168ab] text-white text-base font-semibold rounded-xl shadow-xs transition-colors cursor-pointer w-full sm:w-auto">
+                <svg class="w-5 h-5 mr-1.5 flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"></path>
                 </svg>
-                Add Employee
+                Add Member
             </a>
         </div>
 
-        <!-- Data Grid -->
-        <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
-            <div class="overflow-x-auto">
-                <table class="min-w-full divide-y divide-gray-200">
-                    <thead class="bg-vantage-50/50">
+        <div class="bg-white rounded-xl shadow-sm border border-[#e2e8f0] overflow-hidden flex flex-col w-full">
+            <div class="overflow-x-auto min-w-full">
+                <table class="min-w-full divide-y divide-[#e2e8f0] table-auto">
+                    <thead class="bg-[#f8fafc]">
                         <tr>
-                            <th scope="col"
-                                class="px-6 py-4 text-left text-xs font-bold text-vantage-800 uppercase tracking-wider">
-                                Employee Name</th>
-                            <th scope="col"
-                                class="px-6 py-4 text-left text-xs font-bold text-vantage-800 uppercase tracking-wider">
-                                Contact</th>
-                            <th scope="col"
-                                class="px-6 py-4 text-left text-xs font-bold text-vantage-800 uppercase tracking-wider">
-                                Department</th>
-                            <th scope="col"
-                                class="px-6 py-4 text-left text-xs font-bold text-vantage-800 uppercase tracking-wider">
-                                Role</th>
-                            <th scope="col"
-                                class="px-6 py-4 text-left text-xs font-bold text-vantage-800 uppercase tracking-wider">
-                                Status</th>
-                            <th scope="col"
-                                class="px-6 py-4 text-right text-xs font-bold text-vantage-800 uppercase tracking-wider">
-                                Actions</th>
+                            <th scope="col" class="px-6 py-4 text-left text-sm font-bold text-[#2168ab] uppercase tracking-wider whitespace-nowrap">
+                                Employee Name
+                            </th>
+                            <th scope="col" class="px-6 py-4 text-left text-sm font-bold text-[#2168ab] uppercase tracking-wider whitespace-nowrap">
+                                Contact
+                            </th>
+                            <th scope="col" class="px-6 py-4 text-left text-sm font-bold text-[#2168ab] uppercase tracking-wider whitespace-nowrap">
+                                Department
+                            </th>
+                            <th scope="col" class="px-6 py-4 text-left text-sm font-bold text-[#2168ab] uppercase tracking-wider whitespace-nowrap">
+                                Position
+                            </th>
+                            <th scope="col" class="px-6 py-4 text-left text-sm font-bold text-[#2168ab] uppercase tracking-wider whitespace-nowrap">
+                                Status
+                            </th>
+                            <th scope="col" class="px-6 py-4 text-right text-sm font-bold text-[#2168ab] uppercase tracking-wider whitespace-nowrap">
+                                Actions
+                            </th>
                         </tr>
                     </thead>
-                    <tbody class="bg-white divide-y divide-gray-100">
+                    <tbody class="bg-white divide-y divide-[#e2e8f0]">
                         @foreach ($employees as $employee)
-                            <tr class="hover:bg-gray-50/50 transition-colors">
+                            <tr class="hover:bg-[#f8fafc]/50 transition-colors">
                                 <td class="px-6 py-4 whitespace-nowrap">
                                     <div class="flex items-center">
-                                        <div
-                                            class="h-8 w-8 rounded-full bg-vantage-100 text-vantage-800 flex items-center justify-center font-bold text-xs">
+                                        <div class="h-10 w-10 rounded-full bg-[#eaf3fb] border border-[#d4e6f7] text-[#184e81] flex items-center justify-center font-bold text-sm shadow-xs flex-shrink-0">
                                             {{ substr($employee->first_name, 0, 1) }}{{ substr($employee->last_name, 0, 1) }}
                                         </div>
 
                                         <div class="ml-3">
-                                            <div class="text-sm font-medium text-vantage-900">{{ $employee->first_name }}
-                                                {{ $employee->last_name }}
+                                            <div class="text-base font-bold text-[#081a2b]">
+                                                {{ $employee->first_name }} {{ $employee->last_name }}
                                             </div>
                                         </div>
                                     </div>
                                 </td>
 
                                 <td class="px-6 py-4 whitespace-nowrap">
-                                    <div class="text-sm text-slate-600">{{ $employee->email }}</div>
+                                    <div class="text-base text-[#2168ab] font-medium">{{ $employee->email }}</div>
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap">
-                                    <div class="text-sm text-slate-600">{{ $employee->department->name ?? 'N/A'}}</div>
+                                    <div class="text-base text-[#103456]">{{ $employee->department->name ?? 'N/A' }}</div>
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap">
-                                    <div class="text-sm text-vantage-900 font-medium">{{ $employee->position }}</div>
+                                    <div class="text-base text-[#081a2b] font-semibold">{{ $employee->position }}</div>
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap">
-                                    <span
-                                        class="px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full {{ $employee->employment_status === \App\Models\Employee::STATUS_FULL_TIME ? 'bg-vantage-50 text-vantage-800' : 'bg-gray-100 text-gray-800' }}">
-                                        {{ $employee->employment_status }}
-                                    </span>
+                                    @if($employee->employment_status === \App\Models\Employee::STATUS_FULL_TIME)
+                                        <span class="px-3 py-1 inline-flex text-xs font-bold rounded-full bg-emerald-50 text-emerald-700 border border-emerald-100">
+                                            {{ $employee->employment_status }}
+                                        </span>
+                                    @else
+                                        <span class="px-3 py-1 inline-flex text-xs font-bold rounded-full bg-indigo-50 text-indigo-700 border border-indigo-100">
+                                            {{ $employee->employment_status }}
+                                        </span>
+                                    @endif
                                 </td>
-                                <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                                <td class="px-6 py-4 whitespace-nowrap text-right text-base font-semibold">
                                     <div class="flex items-center justify-end gap-2">
                                         <a href="{{ route('employees.show', $employee->id) }}"
-                                            class="text-vantage-600 hover:text-vantage-900 bg-vantage-50 hover:bg-vantage-100 px-3 py-1 rounded transition-colors">View</a>
+                                            class="text-[#2982d6] hover:text-[#103456] bg-[#eaf3fb] hover:bg-[#d4e6f7] px-3 py-1.5 rounded-lg transition-colors text-sm font-bold shadow-xs">View</a>
+                                        
                                         <a href="{{ route('employees.edit', $employee->id) }}"
-                                            class="text-slate-600 hover:text-vantage-800 bg-gray-100 hover:bg-gray-200 px-3 py-1 rounded transition-colors">Edit</a>
+                                            class="text-[#103456] hover:text-[#081a2b] bg-[#f8fafc] hover:bg-[#e2e8f0] px-3 py-1.5 rounded-lg transition-colors border border-[#e2e8f0] text-sm font-bold shadow-xs">Edit</a>
 
                                         <form action="{{ route('employees.destroy', $employee->id) }}" method="POST"
                                             class="inline" onsubmit="return confirm('Delete this employee?');">
                                             @csrf
                                             @method('DELETE')
                                             <button type="submit"
-                                                class="text-red-600 hover:text-red-900 bg-red-50 hover:bg-red-100 px-3 py-1 rounded transition-colors">Delete</button>
+                                                class="text-rose-600 hover:text-rose-800 bg-rose-50 hover:bg-rose-100 px-3 py-1.5 rounded-lg transition-colors text-sm font-bold border border-rose-100 shadow-xs cursor-pointer">Delete</button>
                                         </form>
                                     </div>
                                 </td>
@@ -97,9 +106,8 @@
                 </table>
             </div>
 
-            {{-- Optional: Pagination links --}}
-            @if(method_exists($employees, 'links'))
-                <div class="px-6 py-4 border-t border-gray-100">
+            @if(method_exists($employees, 'links') && $employees->hasPages())
+                <div class="px-6 py-4 border-t border-[#e2e8f0] bg-[#f8fafc] mt-auto">
                     {{ $employees->links() }}
                 </div>
             @endif

@@ -12,11 +12,13 @@ class EmployeeController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $employees = Employee::with('department')->get();
+        $search = $request->input('search');
 
-        return view('employees.index', compact('employees'));
+        $employees = Employee::search($search)->latest()->paginate(10);
+
+        return view('employees.index', compact('employees', 'search'));
     }
 
     /**
