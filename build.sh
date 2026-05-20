@@ -11,8 +11,8 @@ php artisan config:clear
 php artisan route:clear
 php artisan view:clear
 
-# Execute live database schema adjustments
-echo "Running live database migrations..."
-php artisan migrate --force
+# FIXED: Force drop old tables and run all schema migrations cleanly from scratch
+echo "Rebuilding live database structures..."
+php artisan migrate:fresh --force
 
 echo "VantageHRIS Build Completed Successfully!"
