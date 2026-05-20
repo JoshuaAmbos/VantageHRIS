@@ -7,143 +7,204 @@ use App\Models\Department;
 use App\Models\Employee;
 use App\Models\LeaveRequest;
 use App\Models\User;
+use App\Models\HrActivity;
 use Carbon\Carbon;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
 
 class DatabaseSeeder extends Seeder
 {
-    use WithoutModelEvents;
-
-    /**
-     * Seed the application's database based on strict hris_system dump rules.
-     */
     public function run(): void
     {
-        // 1. SEED DEPARTMENTS: Exactly 5 items matching your database schema text descriptions
-        $departmentsData = [
-            ['name' => 'IT Department', 'desc' => 'Software engineering and local systems support.'],
-            ['name' => 'Human Resources', 'desc' => 'Talent acquisition, payroll operations, and employee success.'],
-            ['name' => 'Finance & Accounting', 'desc' => 'Corporate fiscal management and expense processing.'],
-            ['name' => 'Marketing & Brand', 'desc' => 'Public relations, social outreach campaigns, and copy management.'],
-            ['name' => 'Operations', 'desc' => 'On-site logistics management and facilities maintenance.']
+        // Users & Logins
+        $usersData = [
+            ['name' => 'Alice Vance', 'email' => 'vance@vantage.com', 'role' => 'admin'],
+            ['name' => 'Robert Miller', 'email' => 'miller@vantage.com', 'role' => 'manager'],
+            ['name' => 'Elena Rostova', 'email' => 'rostova@vantage.com', 'role' => 'hr'],
+            ['name' => 'David Kim', 'email' => 'kim@vantage.com', 'role' => 'employee'],
+            ['name' => 'Sarah Jenkins', 'email' => 'jenkins@vantage.com', 'role' => 'employee'],
+            ['name' => 'Michael Chang', 'email' => 'chang@vantage.com', 'role' => 'manager'],
+            ['name' => 'Amanda Ross', 'email' => 'ross@vantage.com', 'role' => 'hr'],
+            ['name' => 'James Foster', 'email' => 'foster@vantage.com', 'role' => 'employee'],
+            ['name' => 'Jessica Taylor', 'email' => 'taylor@vantage.com', 'role' => 'employee'],
+            ['name' => 'Marcus Brody', 'email' => 'brody@vantage.com', 'role' => 'manager'],
         ];
 
-        $departmentIds = [];
-        foreach ($departmentsData as $dept) {
-            $createdDept = Department::create([
-                'name'        => $dept['name'],
-                'description' => $dept['desc'],
-                'manager_id'  => null, // Kept null initially to avoid key loops
-                'status'      => 'active',
+        $userMap = [];
+        foreach ($usersData as $u) {
+            $userMap[$u['email']] = User::create([
+                'name'              => $u['name'],
+                'email'             => $u['email'],
+                'email_verified_at' => now(),
+                'password'          => Hash::make('password'),
+                'role'              => $u['role'],
             ]);
-            $departmentIds[] = $createdDept->id;
         }
 
-        // 2. SEED WORKFORCE MATRIX: Exactly 5 unique records to satisfy constraints
-        // Matches the enum whitelist: 'Administrator', 'Manager', 'HR Staff', 'Software Engineer', 'Accountant'
-        $workforceData = [
-            [
-                'first' => 'Mitsuha', 'last' => 'Miyamizu', 'email' => 'miyamizu@vantage.com',
-                'phone' => '09756624584', 'address' => 'Itamori, Japan', 'position' => 'Software Engineer',
-                'role'  => 'employee', 'dept_idx' => 0
-            ],
-            [
-                'first' => 'Taki', 'last' => 'Tachibana', 'email' => 'tachibana@vantage.com',
-                'phone' => '09123456789', 'address' => 'Tokyo, Japan', 'position' => 'Manager',
-                'role'  => 'manager', 'dept_idx' => 0
-            ],
-            [
-                'first' => 'Hina', 'last' => 'Amano', 'email' => 'amano@vantage.com',
-                'phone' => '09224466880', 'address' => 'Yoyogi, Japan', 'position' => 'HR Staff',
-                'role'  => 'hr', 'dept_idx' => 1
-            ],
-            [
-                'first' => 'Hodaka', 'last' => 'Morishima', 'email' => 'morishima@vantage.com',
-                'phone' => '09113355779', 'address' => 'Shinjuku, Japan', 'position' => 'Accountant',
-                'role'  => 'employee', 'dept_idx' => 2
-            ],
-            [
-                'first' => 'Sayaka', 'last' => 'Natori', 'email' => 'natori@vantage.com',
-                'phone' => '09887766554', 'address' => 'Nagano, Japan', 'position' => 'Administrator',
-                'role'  => 'admin', 'dept_idx' => 4
-            ]
+        // Departments
+        $departmentsData = [
+            'IT'        => ['name' => 'IT Department', 'desc' => 'Software engineering, continuous integration, and local helpdesk pipelines.'],
+            'Marketing' => ['name' => 'Marketing & Brand', 'desc' => 'Public relations, social media marketing campaigns, and growth metrics.'],
+            'Finance'   => ['name' => 'Finance & Accounting', 'desc' => 'Corporate wealth optimization, tax tracking, and payroll disbursements.'],
+            'HR'        => ['name' => 'Human Resources', 'desc' => 'Talent acquisition strategy, performance evaluations, and employee wellness.'],
         ];
 
-        $employeeIds = [];
-        foreach ($workforceData as $index => $data) {
+        $deptMap = [];
+        foreach ($departmentsData as $key => $d) {
+            $deptMap[$key] = Department::create([
+                'name'        => $d['name'],
+                'description' => $d['desc'],
+                'manager_id'  => null,
+                'status'      => 'active',
+            ]);
+        }
+
+        // Employees
+        $employeeSpecs = [
+            ['email' => 'vance@vantage.com', 'first' => 'Alice', 'last' => 'Vance', 'pos' => 'Administrator', 'status' => 'Full-time', 'dept' => 'IT', 'phone' => '09112223333'],
+            ['email' => 'miller@vantage.com', 'first' => 'Robert', 'last' => 'Miller', 'pos' => 'Manager', 'status' => 'Full-time', 'dept' => 'IT', 'phone' => '09123456789'],
+            ['email' => 'kim@vantage.com', 'first' => 'David', 'last' => 'Kim', 'pos' => 'Software Engineer', 'status' => 'Full-time', 'dept' => 'IT', 'phone' => '09756624584'],
+            ['email' => 'taylor@vantage.com', 'first' => 'Jessica', 'last' => 'Taylor', 'pos' => 'Software Engineer', 'status' => 'Part-time', 'dept' => 'IT', 'phone' => '09441122334'],
             
-            // Step A: Provision the login account model entry first to gain user primary key
-            $user = User::create([
-                'name'     => $data['first'] . ' ' . $data['last'],
-                'email'    => $data['email'],
-                'password' => Hash::make('password'),
-                'role'     => $data['role'],
-            ]);
+            ['email' => 'brody@vantage.com', 'first' => 'Marcus', 'last' => 'Brody', 'pos' => 'Manager', 'status' => 'Full-time', 'dept' => 'Marketing', 'phone' => '09556677889'],
+            ['email' => 'jenkins@vantage.com', 'first' => 'Sarah', 'last' => 'Jenkins', 'pos' => 'Software Engineer', 'status' => 'Full-time', 'dept' => 'Marketing', 'phone' => '09113355779'],
+            
+            ['email' => 'chang@vantage.com', 'first' => 'Michael', 'last' => 'Chang', 'pos' => 'Manager', 'status' => 'Full-time', 'dept' => 'Finance', 'phone' => '09456321845'],
+            ['email' => 'foster@vantage.com', 'first' => 'James', 'last' => 'Foster', 'pos' => 'Accountant', 'status' => 'Full-time', 'dept' => 'Finance', 'phone' => '09332211445'],
+            
+            ['email' => 'rostova@vantage.com', 'first' => 'Elena', 'last' => 'Rostova', 'pos' => 'HR Staff', 'status' => 'Full-time', 'dept' => 'HR', 'phone' => '09224466880'],
+            ['email' => 'ross@vantage.com', 'first' => 'Amanda', 'last' => 'Ross', 'pos' => 'HR Staff', 'status' => 'Part-time', 'dept' => 'HR', 'phone' => '09667788990'],
+        ];
 
-            // Step B: Create employee detail record mapped strictly to the user id key
-            $employee = Employee::create([
+        $employees = [];
+        foreach ($employeeSpecs as $spec) {
+            $user = $userMap[$spec['email']];
+            $dept = $deptMap[$spec['dept']];
+
+            $employees[] = Employee::create([
                 'user_id'           => $user->id,
-                'department_id'     => $departmentIds[$data['dept_idx']],
-                'first_name'        => $data['first'],
-                'last_name'         => $data['last'],
-                'email'             => $data['email'],
-                'phone'             => $data['phone'],
-                'address'           => $data['address'],
-                'position'          => $data['position'],
-                'hire_date'         => Carbon::today()->subMonths(12)->addDays($index),
-                'employment_status' => 'Full-time',
+                'department_id'     => $dept->id,
+                'first_name'        => $spec['first'],
+                'last_name'         => $spec['last'],
+                'email'             => $spec['email'],
+                'phone'             => $spec['phone'],
+                'address'           => 'Vantage Enterprise Hub, Suite ' . rand(100, 500),
+                'position'          => $spec['pos'],
+                'hire_date'         => Carbon::today()->subMonths(rand(6, 24))->toDateString(),
+                'employment_status' => $spec['status'],
             ]);
+        }
 
-            $employeeIds[] = $employee->id;
+        $deptMap['IT']->update(['manager_id' => $employees[1]->id]);
+        $deptMap['Marketing']->update(['manager_id' => $employees[4]->id]);
+        $deptMap['Finance']->update(['manager_id' => $employees[6]->id]);
 
-            // Optional: If this employee is a Manager, assign them as the manager of their department
-            if ($data['position'] === 'Manager') {
-                Department::where('id', $employee->department_id)->update([
-                    'manager_id' => $employee->id
+        $managers = [$employees[1], $employees[4], $employees[6]];
+
+        // Attendance History (30 Business Days)
+        $businessDays = [];
+        $current = Carbon::today();
+        
+        while (count($businessDays) < 30) {
+            if (!$current->isWeekend()) {
+                $businessDays[] = $current->toDateString();
+            }
+            $current->subDay();
+        }
+
+        foreach ($businessDays as $date) {
+            foreach ($employees as $emp) {
+                if (rand(1, 40) === 40) continue;
+
+                $roll = rand(1, 100);
+                if ($roll <= 82) {
+                    $status = 'present';
+                    $timeIn = '08:00:00';
+                    $remarks = null;
+                } elseif ($roll <= 92) {
+                    $status = 'late';
+                    $timeIn = '08:' . rand(15, 45) . ':00';
+                    $remarks = 'Delayed during morning transit window.';
+                } elseif ($roll <= 96) {
+                    $status = 'absent';
+                    $timeIn = '00:00:00';
+                    $remarks = 'Unexcused absence profile.';
+                } else {
+                    $status = 'on leave';
+                    $timeIn = '00:00:00';
+                    $remarks = 'Approved strategic leave block window.';
+                }
+
+                Attendance::create([
+                    'employee_id'     => $emp->id,
+                    'attendance_date' => $date,
+                    'time_in'         => $timeIn,
+                    'time_out'        => $status === 'present' || $status === 'late' ? '17:00:00' : '00:00:00',
+                    'status'          => $status,
+                    'remarks'         => $remarks,
+                    'created_at'      => Carbon::parse($date)->setHour(18),
+                    'updated_at'      => Carbon::parse($date)->setHour(18),
                 ]);
             }
         }
 
-        // 3. SEED ATTENDANCES: Exactly 5 unique log profiles matching table structure
-        // Matches the enum whitelist: 'present', 'late', 'absent', 'on leave'
-        $attendanceStatuses = ['present', 'present', 'late', 'present', 'on leave'];
-        $attendanceRemarks  = [null, null, 'Delayed by local transit routing', null, 'Approved personal leave request window'];
-
-        foreach ($employeeIds as $index => $empId) {
-            Attendance::create([
-                'employee_id'     => $empId,
-                'attendance_date' => Carbon::yesterday()->subDays($index),
-                'time_in'         => '08:00:00',
-                'time_out'        => '17:00:00',
-                'status'          => $attendanceStatuses[$index],
-                'remarks'         => $attendanceRemarks[$index],
-            ]);
-        }
-
-        // 4. SEED LEAVE REQUESTS: Exactly 5 log rows satisfying constraint links
-        // Matches the enum whitelist: 'Vacation', 'Sick', 'Personal', 'Maternity', 'Paternity', 'Bereavement', 'Unpaid'
-        $leaveTypes = ['Personal', 'Vacation', 'Sick', 'Personal', 'Vacation'];
-        $statuses    = ['Pending', 'Approved', 'Rejected', 'Pending', 'Approved'];
-        $reasons    = [
-            'Urgent out-of-city personal emergency requirements.',
-            'Scheduled family vacation travel package operations.',
-            'Routine medical dental consultation extraction recovery.',
-            'Home appliance repair coordination timeframe.',
-            'Annual rest allocation window.'
+        // Leave Requests
+        $leaveReasons = [
+            'Urgent family commitment requirements.',
+            'Scheduled out-of-city medical consultation tracking.',
+            'Rest and recuperation breaks.',
+            'Moving to a new permanent residential property address.',
         ];
 
-        foreach ($employeeIds as $index => $empId) {
+        $leaveTypes = ['Vacation', 'Sick', 'Personal', 'Unpaid'];
+
+        foreach ($employees as $index => $emp) {
+            if (in_array($emp->id, [2, 5, 7])) continue; 
+
             LeaveRequest::create([
-                'employee_id' => $empId,
-                'leave_type'  => $leaveTypes[$index],
-                'start_date'  => Carbon::tomorrow()->addWeeks($index)->toDateString(),
-                'end_date'    => Carbon::tomorrow()->addWeeks($index)->addDays(3)->toDateString(),
-                'reason'      => $reasons[$index],
-                'status'      => $statuses[$index],
-                // If approved, point foreign key back safely to Employee ID #2 (Our designated Manager Taki)
-                'approved_by' => $statuses[$index] === 'Approved' ? $employeeIds[1] : null,
+                'employee_id' => $emp->id,
+                'leave_type'  => $leaveTypes[rand(0, 2)],
+                'start_date'  => Carbon::today()->subWeeks(3)->toDateString(),
+                'end_date'    => Carbon::today()->subWeeks(3)->addDays(3)->toDateString(),
+                'reason'      => $leaveReasons[rand(0, 3)],
+                'status'      => 'Approved',
+                'approved_by' => $managers[rand(0, 2)]->id,
+                'created_at'  => Carbon::today()->subWeeks(4),
+            ]);
+
+            if ($index % 2 === 0) {
+                LeaveRequest::create([
+                    'employee_id' => $emp->id,
+                    'leave_type'  => $leaveTypes[rand(0, 3)],
+                    'start_date'  => Carbon::today()->addWeeks(1)->toDateString(),
+                    'end_date'    => Carbon::today()->addWeeks(1)->addDays(2)->toDateString(),
+                    'reason'      => 'Personal business and family task management execution.',
+                    'status'      => 'Pending',
+                    'approved_by' => null,
+                    'created_at'  => Carbon::today()->subDays(2),
+                ]);
+            }
+        }
+
+        // Audit Logs
+        $hrStaffUser = $userMap['rostova@vantage.com'];
+        $adminUser   = $userMap['vance@vantage.com'];
+
+        $activities = [
+            ['user' => $adminUser, 'type' => 'employee_created', 'desc' => 'Alice Vance provisioned a new administrative user profile footprint for Marcus Brody.', 'offset' => 12],
+            ['user' => $hrStaffUser, 'type' => 'employee_created', 'desc' => 'Elena Rostova registered an incoming employee record for Jessica Taylor.', 'offset' => 10],
+            ['user' => $adminUser, 'type' => 'employee_updated', 'desc' => 'Alice Vance updated the departmental mapping properties for Amanda Ross.', 'offset' => 8],
+            ['user' => $hrStaffUser, 'type' => 'leave_approved', 'desc' => 'Elena Rostova signed off and approved the vacation window request for David Kim.', 'offset' => 5],
+            ['user' => $adminUser, 'type' => 'employee_updated', 'desc' => 'Alice Vance changed the system access authorization roles for Robert Miller.', 'offset' => 1],
+        ];
+
+        foreach ($activities as $act) {
+            HrActivity::create([
+                'user_id'     => $act['user']->id,
+                'event_type'  => $act['type'],
+                'description' => $act['desc'],
+                'created_at'  => Carbon::now()->subDays($act['offset']),
+                'updated_at'  => Carbon::now()->subDays($act['offset']),
             ]);
         }
     }
