@@ -18,16 +18,20 @@ class DatabaseSeeder extends Seeder
     {
         // Users & Logins
         $usersData = [
-            ['name' => 'Alice Vance', 'email' => 'vance@vantage.com', 'role' => 'admin'],
-            ['name' => 'Robert Miller', 'email' => 'miller@vantage.com', 'role' => 'manager'],
-            ['name' => 'Elena Rostova', 'email' => 'rostova@vantage.com', 'role' => 'hr'],
-            ['name' => 'David Kim', 'email' => 'kim@vantage.com', 'role' => 'employee'],
-            ['name' => 'Sarah Jenkins', 'email' => 'jenkins@vantage.com', 'role' => 'employee'],
-            ['name' => 'Michael Chang', 'email' => 'chang@vantage.com', 'role' => 'manager'],
-            ['name' => 'Amanda Ross', 'email' => 'ross@vantage.com', 'role' => 'hr'],
-            ['name' => 'James Foster', 'email' => 'foster@vantage.com', 'role' => 'employee'],
-            ['name' => 'Jessica Taylor', 'email' => 'taylor@vantage.com', 'role' => 'employee'],
-            ['name' => 'Marcus Brody', 'email' => 'brody@vantage.com', 'role' => 'manager'],
+            // Default ADMIN account
+            ['name' => 'System Admin', 'email' => 'admin@vantage.com', 'role' => 'admin', 'pass' => 'password'],
+            
+            // Dummy
+            ['name' => 'Alice Vance', 'email' => 'vance@vantage.com', 'role' => 'admin', 'pass' => 'password'],
+            ['name' => 'Robert Miller', 'email' => 'miller@vantage.com', 'role' => 'manager', 'pass' => 'password'],
+            ['name' => 'Elena Rostova', 'email' => 'rostova@vantage.com', 'role' => 'hr', 'pass' => 'password'],
+            ['name' => 'David Kim', 'email' => 'kim@vantage.com', 'role' => 'employee', 'pass' => 'password'],
+            ['name' => 'Sarah Jenkins', 'email' => 'jenkins@vantage.com', 'role' => 'employee', 'pass' => 'password'],
+            ['name' => 'Michael Chang', 'email' => 'chang@vantage.com', 'role' => 'manager', 'pass' => 'password'],
+            ['name' => 'Amanda Ross', 'email' => 'ross@vantage.com', 'role' => 'hr', 'pass' => 'password'],
+            ['name' => 'James Foster', 'email' => 'foster@vantage.com', 'role' => 'employee', 'pass' => 'password'],
+            ['name' => 'Jessica Taylor', 'email' => 'taylor@vantage.com', 'role' => 'employee', 'pass' => 'password'],
+            ['name' => 'Marcus Brody', 'email' => 'brody@vantage.com', 'role' => 'manager', 'pass' => 'password'],
         ];
 
         $userMap = [];
@@ -36,7 +40,7 @@ class DatabaseSeeder extends Seeder
                 'name'              => $u['name'],
                 'email'             => $u['email'],
                 'email_verified_at' => now(),
-                'password'          => Hash::make('password'),
+                'password'          => Hash::make($u['pass']),
                 'role'              => $u['role'],
             ]);
         }
@@ -61,6 +65,8 @@ class DatabaseSeeder extends Seeder
 
         // Employees
         $employeeSpecs = [
+            ['email' => 'admin@vantage.com', 'first' => 'System', 'last' => 'Admin', 'pos' => 'Administrator', 'status' => 'Full-time', 'dept' => 'IT', 'phone' => '09000000000'],
+            
             ['email' => 'vance@vantage.com', 'first' => 'Alice', 'last' => 'Vance', 'pos' => 'Administrator', 'status' => 'Full-time', 'dept' => 'IT', 'phone' => '09112223333'],
             ['email' => 'miller@vantage.com', 'first' => 'Robert', 'last' => 'Miller', 'pos' => 'Manager', 'status' => 'Full-time', 'dept' => 'IT', 'phone' => '09123456789'],
             ['email' => 'kim@vantage.com', 'first' => 'David', 'last' => 'Kim', 'pos' => 'Software Engineer', 'status' => 'Full-time', 'dept' => 'IT', 'phone' => '09756624584'],
@@ -95,11 +101,12 @@ class DatabaseSeeder extends Seeder
             ]);
         }
 
-        $deptMap['IT']->update(['manager_id' => $employees[1]->id]);
-        $deptMap['Marketing']->update(['manager_id' => $employees[4]->id]);
-        $deptMap['Finance']->update(['manager_id' => $employees[6]->id]);
+        // Updated positional array indicators due to the new account sequence addition
+        $deptMap['IT']->update(['manager_id' => $employees[2]->id]); // Robert Miller
+        $deptMap['Marketing']->update(['manager_id' => $employees[5]->id]); // Marcus Brody
+        $deptMap['Finance']->update(['manager_id' => $employees[7]->id]); // Michael Chang
 
-        $managers = [$employees[1], $employees[4], $employees[6]];
+        $managers = [$employees[2], $employees[5], $employees[7]];
 
         // Attendance History (30 Business Days)
         $businessDays = [];
@@ -159,7 +166,8 @@ class DatabaseSeeder extends Seeder
         $leaveTypes = ['Vacation', 'Sick', 'Personal', 'Unpaid'];
 
         foreach ($employees as $index => $emp) {
-            if (in_array($emp->id, [2, 5, 7])) continue; 
+            // Bypass manager profile updates to match original loop metrics
+            if (in_array($emp->id, [3, 6, 8])) continue; 
 
             LeaveRequest::create([
                 'employee_id' => $emp->id,
@@ -169,7 +177,7 @@ class DatabaseSeeder extends Seeder
                 'reason'      => $leaveReasons[rand(0, 3)],
                 'status'      => 'Approved',
                 'approved_by' => $managers[rand(0, 2)]->id,
-                'created_at'  => Carbon::today()->subWeeks(4),
+                'created_at'  => Carbon::parse(Carbon::today()->subWeeks(4))->toDateTimeString(),
             ]);
 
             if ($index % 2 === 0) {
@@ -181,7 +189,7 @@ class DatabaseSeeder extends Seeder
                     'reason'      => 'Personal business and family task management execution.',
                     'status'      => 'Pending',
                     'approved_by' => null,
-                    'created_at'  => Carbon::today()->subDays(2),
+                    'created_at'  => Carbon::parse(Carbon::today()->subDays(2))->toDateTimeString(),
                 ]);
             }
         }

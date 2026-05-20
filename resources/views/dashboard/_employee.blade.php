@@ -44,21 +44,7 @@
     </div>
 @else
     {{-- Employee & Staff Personalized Dashboard Grid Layout --}}
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-
-        <div class="bg-white rounded-xl shadow-sm border border-slate-100 p-6 hover:shadow-md transition-shadow duration-200">
-            <div class="flex items-center justify-between mb-4">
-                <h3 class="text-slate-500 text-xs font-bold uppercase tracking-wider">Today's Status</h3>
-                <div class="w-10 h-10 rounded-xl {{ $todayStatus !== 'Not Clocked In' ? 'bg-emerald-50 text-emerald-600' : 'bg-slate-50 text-slate-400' }} flex items-center justify-center shadow-inner">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                    </svg>
-                </div>
-            </div>
-            <p class="text-2xl font-bold text-slate-900">{{ $todayStatus }}</p>
-            <p class="text-xs text-slate-400 mt-3 font-medium">Standard Shift: 08:00 AM - 05:00 PM</p>
-        </div>
-
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
         <div class="bg-white rounded-xl shadow-sm border border-slate-100 p-6 hover:shadow-md transition-shadow duration-200">
             <div class="flex items-center justify-between mb-4">
                 <h3 class="text-slate-500 text-xs font-bold uppercase tracking-wider">Days Present</h3>
