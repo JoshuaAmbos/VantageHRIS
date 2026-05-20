@@ -12,9 +12,11 @@ RUN apk add --no-cache \
     git \
     postgresql-dev \
     oniguruma-dev \
-    bash
+    bash \
+    nodejs \
+    npm
 
-# FIXED: Explicitly install BOTH pgsql and pdo_pgsql drivers for Render PostgreSQL
+# Install native PHP extensions
 RUN docker-php-ext-configure pgsql -with-pgsql=/usr/local/pgsql \
     && docker-php-ext-install pdo pdo_mysql pdo_pgsql pgsql mbstring exif pcntl bcmath gd
 
@@ -26,6 +28,9 @@ WORKDIR /var/www
 
 # Copy application source code
 COPY . .
+
+# Install NPM packages and build production assets (Vite compilation)
+RUN npm install && npm run build
 
 # Inject the Laravel routing map
 COPY nginx.conf /etc/nginx/http.d/default.conf

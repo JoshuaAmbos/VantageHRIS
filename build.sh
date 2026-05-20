@@ -1,18 +1,18 @@
 #!/usr/bin/env bash
-# exit on error
-set -o errexit
+set -e
 
-echo "🚀 Starting VantageHRIS Build Pipeline..."
+echo "Starting VantageHRIS Production Build Pipeline..."
 
-# Install composer dependencies
-composer install --no-dev --no-interaction --prefer-dist --optimize-autoloader
+# Install Composer dependencies optimally for production
+composer install --no-dev --no-interaction --optimize-autoloader
 
-# Optimize Laravel configuration and routes
-echo "⚡ Optimizing application caches..."
-php artisan config:cache
-php artisan route:cache
-php artisan view:cache
+# Clear any cached view parameters
+php artisan config:clear
+php artisan route:clear
+php artisan view:clear
 
-# Run database migrations automagically
-echo "🗄️ Running migrations..."
+# Execute live database schema adjustments
+echo "Running live database migrations..."
 php artisan migrate --force
+
+echo "VantageHRIS Build Completed Successfully!"
