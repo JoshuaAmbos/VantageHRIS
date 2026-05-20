@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Database\Eloquent\Builder;
 
 class LeaveRequest extends Model
 {
@@ -96,5 +97,26 @@ class LeaveRequest extends Model
      */
     public function approvedBy(): BelongsTo {
         return $this->belongsTo(Employee::class, 'approved_by', 'id');
+    }
+
+    /**
+     * Scope search
+     */
+    public function scopeSearch(Builder $query, ?string $term): Builder
+    {
+        if (! $term) {
+            return $query;
+        }
+
+        return $query->where(function (Builder $q) use ($term) {
+            $q->where('leave_type', 'LIKE', "%{$term}%")
+            ->orWhere('status', 'LIKE', "%{$term}%")
+            ->orWhere('reason', 'LIKE', "%{$term}%")
+            ->orWhereHas('submittedBy', function (Builder $empQuery) use ($term) {
+                $empQuery->where('first_name', 'LIKE', "%{$term}%")
+                        ->orWhere('last_name', 'LIKE', "%{$term}%")
+                        ->orWhere('position', 'LIKE', "%{$term}%");
+            });
+        });
     }
 }

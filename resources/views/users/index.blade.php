@@ -3,125 +3,153 @@
         {{ __('User Account Directory') }}
     </x-slot>
 
-    <div class="mt-6">
-        <!-- Table Header & Provisioning Action Link -->
-        <div class="flex justify-between items-center mb-4">
-            <h3 class="text-lg font-bold text-vantage-900">All System Users</h3>
+    <div class="mt-6 px-2 sm:px-0">
+        <h3 class="text-xl font-bold text-[#081a2b] mb-6 tracking-tight">All System Users</h3>
+
+        <div class="flex flex-col sm:flex-row justify-between items-stretch sm:items-center gap-4 mb-6">
+
+            {{-- Search Bar --}}
+            <div class="w-full sm:max-w-xs">
+                <x-search-bar :action="route('users.index')" :value="$search" placeholder="Search users..." />
+            </div>
+
             <a href="{{ route('users.create') }}"
-                class="inline-flex items-center px-4 py-2 bg-vantage-800 text-white text-sm font-bold rounded-lg shadow-sm hover:bg-vantage-900 transition-colors">
-                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                class="inline-flex items-center justify-center px-4 py-2.5 bg-[#2982d6] hover:bg-[#2168ab] text-white text-base font-semibold rounded-xl shadow-xs transition-colors cursor-pointer w-full sm:w-auto">
+                <svg class="w-5 h-5 mr-1.5 flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2"
+                    viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round"
-                        d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"></path>
+                        d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z">
+                    </path>
                 </svg>
                 Provision User Account
             </a>
         </div>
 
-        <!-- Data Grid Display Frame -->
-        <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
-            <div class="overflow-x-auto">
-                <table class="min-w-full divide-y divide-gray-200">
-                    <thead class="bg-vantage-50/50">
+
+        {{-- Scroll-Free Structured Grid Table --}}
+        <div class="bg-white rounded-xl shadow-sm border border-[#e2e8f0] overflow-hidden flex flex-col w-full">
+            <div class="overflow-x-auto min-w-full">
+                <table class="min-w-full divide-y divide-[#e2e8f0] table-fixed">
+                    <thead class="bg-[#f8fafc]">
                         <tr>
                             <th scope="col"
-                                class="px-6 py-4 text-left text-xs font-bold text-vantage-800 uppercase tracking-wider">
-                                User / Account Name</th>
+                                class="w-1/4 px-4 py-3.5 text-left text-sm font-bold text-[#2168ab] uppercase tracking-wider whitespace-nowrap">
+                                User / Account Name
+                            </th>
                             <th scope="col"
-                                class="px-6 py-4 text-left text-xs font-bold text-vantage-800 uppercase tracking-wider">
-                                Login Email</th>
+                                class="w-1/4 px-4 py-3.5 text-left text-sm font-bold text-[#2168ab] uppercase tracking-wider whitespace-nowrap">
+                                Login Email
+                            </th>
                             <th scope="col"
-                                class="px-6 py-4 text-left text-xs font-bold text-vantage-800 uppercase tracking-wider">
-                                Linked Employee Profile</th>
+                                class="w-1/4 px-4 py-3.5 text-left text-sm font-bold text-[#2168ab] uppercase tracking-wider whitespace-nowrap">
+                                Linked Employee Profile
+                            </th>
                             <th scope="col"
-                                class="px-6 py-4 text-left text-xs font-bold text-vantage-800 uppercase tracking-wider">
-                                Access Role</th>
+                                class="w-36 px-4 py-3.5 text-left text-sm font-bold text-[#2168ab] uppercase tracking-wider whitespace-nowrap">
+                                Access Role
+                            </th>
                             <th scope="col"
-                                class="px-6 py-4 text-left text-xs font-bold text-vantage-800 uppercase tracking-wider">
-                                Created Date</th>
+                                class="w-32 px-4 py-3.5 text-left text-sm font-bold text-[#2168ab] uppercase tracking-wider whitespace-nowrap">
+                                Created Date
+                            </th>
                             <th scope="col"
-                                class="px-6 py-4 text-right text-xs font-bold text-vantage-800 uppercase tracking-wider">
-                                Actions</th>
+                                class="w-32 px-4 py-3.5 text-right text-sm font-bold text-[#2168ab] uppercase tracking-wider whitespace-nowrap">
+                                Actions
+                            </th>
                         </tr>
                     </thead>
-                    <tbody class="bg-white divide-y divide-gray-100">
+                    <tbody class="bg-white divide-y divide-[#e2e8f0]">
                         @foreach ($users as $user)
-                            <tr class="hover:bg-gray-50/50 transition-colors">
+                            <tr class="hover:bg-[#f8fafc]/50 transition-colors">
 
-                                {{-- Avatar Icon and Account Name --}}
-                                <td class="px-6 py-4 whitespace-nowrap">
+                                {{-- Avatar Initials Badge & Display Name --}}
+                                <td class="px-4 py-3.5 whitespace-nowrap truncate">
                                     <div class="flex items-center">
                                         <div
-                                            class="h-8 w-8 rounded-full bg-slate-100 text-slate-700 border border-slate-200 flex items-center justify-center font-bold text-xs uppercase">
-                                            {{ substr($user->name, 0, 2) }}
+                                            class="h-9 w-9 rounded-full bg-[#eaf3fb] border border-[#d4e6f7] text-[#184e81] flex items-center justify-center font-bold text-xs uppercase flex-shrink-0">
+                                            {{ substr($user->name ?? 'U', 0, 2) }}
                                         </div>
-                                        <div class="ml-3">
-                                            <div class="text-sm font-semibold text-vantage-900">{{ $user->name }}</div>
+                                        <div class="ml-2.5 truncate">
+                                            <div class="text-base font-bold text-[#081a2b] truncate">{{ $user->name }}</div>
                                         </div>
                                     </div>
                                 </td>
 
-                                {{-- Email --}}
-                                <td class="px-6 py-4 whitespace-nowrap">
-                                    <div class="text-sm text-slate-600">{{ $user->email }}</div>
+                                {{-- Login Email --}}
+                                <td class="px-4 py-3.5 whitespace-nowrap truncate">
+                                    <div class="text-base text-[#2168ab] font-medium truncate">{{ $user->email }}</div>
                                 </td>
 
-                                {{-- Relational Link back to Employee Model --}}
-                                <td class="px-6 py-4 whitespace-nowrap">
+                                {{-- Profile Relational Links --}}
+                                <td class="px-4 py-3.5 whitespace-nowrap truncate">
                                     @if($user->employee)
-                                        <div class="text-sm text-vantage-900 font-medium">
+                                        <div class="text-base text-[#081a2b] font-bold truncate">
                                             {{ $user->employee->last_name }}, {{ $user->employee->first_name }}
                                         </div>
-                                        <div class="text-[10px] text-slate-400 font-medium">
+                                        <div class="text-xs text-[#549bde] font-medium truncate">
                                             {{ $user->employee->department->name ?? 'No Department' }}
                                         </div>
                                     @else
-                                        <span class="text-xs text-amber-600 font-medium italic flex items-center">
+                                        <span
+                                            class="px-2.5 py-0.5 inline-flex text-xs font-bold rounded-full bg-amber-100 text-amber-900 italic">
                                             Orphaned Account
                                         </span>
                                     @endif
                                 </td>
 
-                                {{-- Access Role Dynamic Badges --}}
-                                <td class="px-6 py-4 whitespace-nowrap">
-                                    @if($user->role === 'admin')
+                                {{-- Access Role High-Contrast Pastel Badge Matrix --}}
+                                <td class="px-4 py-3.5 whitespace-nowrap">
+                                    @php
+                                        $normalizedRole = strtolower($user->role);
+                                    @endphp
+
+                                    @if($normalizedRole === 'admin' || $normalizedRole === 'administrator')
                                         <span
-                                            class="px-2.5 py-1 inline-flex text-xs font-bold rounded-md bg-red-50 text-red-700 border border-red-100">
-                                            Administrator
+                                            class="px-2.5 py-0.5 inline-flex text-xs font-bold rounded-full bg-rose-300 text-rose-900">
+                                            Admin
                                         </span>
-                                    @elseif($user->role === 'hr')
+                                    @elseif($normalizedRole === 'hr')
                                         <span
-                                            class="px-2.5 py-1 inline-flex text-xs font-bold rounded-md bg-vantage-50 text-vantage-800 border border-vantage-100">
-                                            HR Management
+                                            class="px-2.5 py-0.5 inline-flex text-xs font-bold rounded-full bg-green-300 text-green-900">
+                                            HR Staff
+                                        </span>
+                                    @elseif($normalizedRole === 'manager')
+                                        <span
+                                            class="px-2.5 py-0.5 inline-flex text-xs font-bold rounded-full bg-blue-300 text-blue-900">
+                                            Manager
                                         </span>
                                     @else
                                         <span
-                                            class="px-2.5 py-1 inline-flex text-xs font-medium rounded-md bg-slate-50 text-slate-600 border border-slate-200/60">
+                                            class="px-2.5 py-0.5 inline-flex text-xs font-bold rounded-full bg-yellow-300 text-yellow-900">
                                             Employee
                                         </span>
                                     @endif
                                 </td>
 
-                                {{-- Account Creation Stamp --}}
-                                <td class="px-6 py-4 whitespace-nowrap">
-                                    <div class="text-xs text-slate-600 font-medium">
-                                        {{ $user->created_at->format('M d, Y') }}
+                                {{-- Creation Stamp --}}
+                                <td class="px-4 py-3.5 whitespace-nowrap">
+                                    <div class="text-base text-[#103456] font-medium">
+                                        {{ $user->created_at->format('M j, Y') }}
                                     </div>
                                 </td>
 
-                                {{-- System Admin Actions Column --}}
-                                <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                                    <div class="flex items-center justify-end gap-2">
+                                {{-- Control Options Column --}}
+                                <td class="px-4 py-3.5 whitespace-nowrap text-right text-base font-semibold">
+                                    <div class="flex items-center justify-end gap-1.5">
                                         <a href="{{ route('users.edit', $user->id) }}"
-                                            class="text-slate-600 hover:text-vantage-800 bg-gray-100 hover:bg-gray-200 px-3 py-1 rounded transition-colors">Edit</a>
+                                            class="text-[#103456] hover:text-[#081a2b] bg-[#f8fafc] hover:bg-[#e2e8f0] px-2.5 py-1 rounded-lg transition-colors border border-[#e2e8f0] text-sm font-bold shadow-xs">
+                                            Edit
+                                        </a>
 
-                                        <!-- Prevent the active administrator user from dropping their own account row -->
                                         @if($user->id !== auth()->id())
                                             <form action="{{ route('users.destroy', $user->id) }}" method="POST" class="inline"
-                                                onsubmit="return confirm('Completely revoke system credentials for this account?');">
+                                                onsubmit="return confirm('Completely revoke system credentials for this account? This action cannot be undone.');">
                                                 @csrf
                                                 @method('DELETE')
                                                 <button type="submit"
-                                                    class="text-red-600 hover:text-red-900 bg-red-50 hover:bg-red-100 px-3 py-1 rounded transition-colors">Revoke</button>
+                                                    class="text-rose-600 hover:text-rose-800 bg-rose-50 hover:bg-rose-100 px-2.5 py-1 rounded-lg transition-colors text-sm font-bold border border-rose-100 shadow-xs cursor-pointer">
+                                                    Revoke
+                                                </button>
                                             </form>
                                         @endif
                                     </div>
@@ -132,9 +160,9 @@
                 </table>
             </div>
 
-            {{-- Pagination Integration --}}
-            @if(method_exists($users, 'links'))
-                <div class="px-6 py-4 border-t border-gray-100">
+            {{-- Navigation Pagination Blocks --}}
+            @if(method_exists($users, 'links') && $users->hasPages())
+                <div class="px-6 py-4 border-t border-[#e2e8f0] bg-[#f8fafc] mt-auto">
                     {{ $users->links() }}
                 </div>
             @endif

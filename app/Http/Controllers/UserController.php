@@ -10,17 +10,20 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Arr;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
+
 
 class UserController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $users = User::all();
+        $search = $request->input('search');
+        $users = User::search($search)->latest()->paginate(10);
 
-        return view('users.index', compact('users'));
+        return view('users.index', compact('users', 'search'));
     }
 
     /**

@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Database\Eloquent\Builder;
 
 class Attendance extends Model
 {
@@ -75,6 +76,23 @@ class Attendance extends Model
         return $this->belongsTo(Employee::class);
     }
 
-    
-    
+    /**
+     * Query search for this model.
+     */
+    public function scopeSearch(Builder $query, ?string $term): Builder
+    {
+        if (! $term) {
+            return $query;
+        }
+
+        return $query->where(function (Builder $q) use ($term) {
+            $q->where('status', 'LIKE', "%{$term}%")
+            ->orWhere('remarks', 'LIKE', "%{$term}%")
+            ->orWhereHas('employee', function (Builder $empQuery) use ($term) {
+                $empQuery->where('first_name', 'LIKE', "%{$term}%")
+                ->orWhere('last_name', 'LIKE', "%{$term}%")
+                ->orWhere('position', 'LIKE', "%{$term}%");
+            });
+        });
+    }
 }

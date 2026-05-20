@@ -13,8 +13,9 @@ class LeaveRequestController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
+        $search = $request->input('search');
         $user = auth()->user();
 
         if ($user->role === 'employee') {
@@ -26,10 +27,10 @@ class LeaveRequestController extends Controller
             })->with('submittedBy')->get();
         } else {
 
-            $leaveRequests = LeaveRequest::with('submittedBy')->get();
+            $leaveRequests = LeaveRequest::search($search)->with('submittedBy')->get();
         }
 
-        return view('leave-requests.index', compact('leaveRequests'));
+        return view('leave-requests.index', compact('leaveRequests', 'search'));
     }
 
     /**

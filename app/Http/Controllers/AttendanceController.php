@@ -12,8 +12,9 @@ class AttendanceController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
+        $search = $request->input('search');
         $user = auth()->user();
 
         if ($user->role === 'employee') {
@@ -26,10 +27,10 @@ class AttendanceController extends Controller
         } else {
 
             // Admin & HR see global attendance 
-            $attendances = Attendance::with('employee.department')->get();
+            $attendances = Attendance::search($search)->with('employee.department')->get();
         }
 
-        return view('attendances.index', compact('attendances'));
+        return view('attendances.index', compact('attendances', 'search'));
     }
 
     /**

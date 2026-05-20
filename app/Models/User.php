@@ -2,15 +2,13 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Database\Factories\UserFactory;
-use Illuminate\Database\Eloquent\Attributes\Fillable;
-use Illuminate\Database\Eloquent\Attributes\Hidden;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Database\Eloquent\Builder;
 
 class User extends Authenticatable
 {
@@ -45,20 +43,15 @@ class User extends Authenticatable
      */
     public static function getEnumValues(string $column): array
     {
-        // Fetch the target table string name (attendances)
         $table = (new static)->getTable();
-
-        // Pass the string query directly to DB::select() without DB::raw()
         $result = DB::select("SHOW COLUMNS FROM {$table} WHERE Field = '{$column}'");
 
-        // Safety check: if column doesn't exist, return an empty array to prevent null pointer crashes
         if (empty($result)) {
             return [];
         }
 
         $type = $result[0]->Type;
 
-        // Parse the string structure: enum('present','absent','leave')
         preg_match('/^enum\((.*)\)$/', $type, $matches);
         
         if (!isset($matches[1])) {
@@ -78,5 +71,21 @@ class User extends Authenticatable
      */
     public function employee(): HasOne {
         return $this->hasOne(Employee::class);
+    }
+
+    /**
+     * Query search for this model across account name, login email, and system access role.
+     */
+    public function scopeSearch(Builder $query, ?string $term): Builder
+    {
+        if (! $term) {
+            return $query;
+        }
+
+        return $query->where(function (Builder $q) use ($term) {
+            $q->where('name', 'LIKE', "%{$term}%")
+            ->orWhere('email', 'LIKE', "%{$term}%")
+            ->orWhere('role', 'LIKE', "%{$term}%");
+        });
     }
 }
