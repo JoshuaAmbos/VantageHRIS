@@ -11,6 +11,7 @@
 <body x-data="{ mobileMenuOpen: false }"
     class="font-sans antialiased bg-[#f8fafc] text-[#081a2b] h-full flex overflow-hidden selection:bg-[#2982d6] selection:text-white">
 
+    {{-- Mobile Navigation Overlay --}}
     <div x-show="mobileMenuOpen" x-transition:enter="transition-opacity ease-linear duration-300"
         x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100"
         x-transition:leave="transition-opacity ease-linear duration-300" x-transition:leave-start="opacity-100"
@@ -118,12 +119,30 @@
                     </svg>
                     <span class="text-base">Users</span>
                 </a>
+
+                {{-- NEW: Intelligence & Operational Analytics Reporting Stream --}}
+                <div class="pt-5 pb-2">
+                    <p class="px-3 text-xs font-bold text-[#2168ab] uppercase tracking-widest">Intelligence</p>
+                </div>
+
+                <a href="{{ route('reports.index') }}"
+                    class="flex items-center px-3 py-2.5 rounded-lg transition-all duration-150 group {{ request()->routeIs('reports.*') ? 'bg-[#eaf3fb] text-[#103456] font-semibold' : 'text-[#2168ab] hover:bg-[#f8fafc] hover:text-[#184e81]' }}">
+                    <svg class="w-5 h-5 mr-3 transition-colors {{ request()->routeIs('reports.*') ? 'text-[#2982d6]' : 'text-[#549bde] group-hover:text-[#2982d6]' }}"
+                        fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                            d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z">
+                        </path>
+                    </svg>
+                    <span class="text-base">HR Reports</span>
+                </a>
             @endif
         </nav>
     </aside>
 
+    {{-- Content Workspace Panel Container --}}
     <div class="flex-1 flex flex-col min-w-0 bg-[#f8fafc] ml-0 overflow-hidden">
-        <header class="h-16 bg-white flex items-center px-4 sm:px-8 justify-between relative z-30 border-b border-[#e2e8f0]">
+        <header
+            class="h-16 bg-white flex items-center px-4 sm:px-8 justify-between relative z-30 border-b border-[#e2e8f0]">
             <div class="flex items-center space-x-3">
                 <button @click="mobileMenuOpen = true"
                     class="p-2 -ml-2 rounded-lg text-[#2168ab] hover:bg-[#eaf3fb] hover:text-[#103456] lg:hidden focus:outline-none">

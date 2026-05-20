@@ -8,6 +8,7 @@ use App\Http\Controllers\LeaveRequestController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\ReportController;
 
 // Login Route
 Route::get('/', function () {
@@ -146,6 +147,17 @@ Route::middleware(['auth', 'role:admin,hr'])->group(function () {
 
         // Destroy
         Route::delete('/{id}', [UserController::class, 'destroy'])->name('destroy');
+    });
+});
+
+// Reports Module (Admin and HR)
+Route::middleware(['auth', 'role:admin,hr'])->group(function () {
+    Route::prefix('reports')->name('reports.')->group(function () {
+        
+        Route::get('/', [ReportController::class, 'index'])->name('index');
+
+        Route::get('/attendance', [ReportController::class, 'attendanceReport'])->name('attendance');
+        Route::get('/leaves', [ReportController::class, 'leaveReport'])->name('leaves');
     });
 });
 
