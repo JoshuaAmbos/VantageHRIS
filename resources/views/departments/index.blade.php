@@ -83,6 +83,9 @@
 
                                 <td class="px-6 py-4 whitespace-nowrap text-right text-base font-semibold">
                                     <div class="flex items-center justify-end gap-2">
+                                        <a href="{{ route('departments.show', $department->id) }}"
+                                            class="text-[#2982d6] hover:text-[#103456] bg-[#eaf3fb] hover:bg-[#d4e6f7] px-3 py-1.5 rounded-lg transition-colors text-sm font-bold shadow-xs">View</a>
+
                                         <a href="{{ route('departments.edit', $department->id) }}"
                                             class="text-[#103456] hover:text-[#081a2b] bg-[#f8fafc] hover:bg-[#e2e8f0] px-3 py-1.5 rounded-lg transition-colors border border-[#e2e8f0] text-sm font-bold shadow-xs">Edit</a>
 

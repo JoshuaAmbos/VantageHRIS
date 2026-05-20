@@ -52,7 +52,9 @@ class DepartmentController extends Controller
      */
     public function show(string $id)
     {
-        //
+        $department = Department::with(['employees', 'manager'])->findOrFail($id);
+
+        return view('departments.show', compact('department'));
     }
 
     /**
