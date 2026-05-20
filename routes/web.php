@@ -176,17 +176,15 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/my-portal', [DashboardController::class, 'myPortal'])->name('dashboard.my-portal');
 });
 
-require __DIR__.'/auth.php';
-
 Route::get('/rescue', function () {
-    Artisan::call('optimize:clear');
-    $output = "<b>Caches successfully destroyed!</b><br><br>";
+    \Illuminate\Support\Facades\Artisan::call('optimize:clear');
+    $output = "✅ <b>Caches successfully destroyed!</b><br><br>";
 
     $logPath = storage_path('logs/laravel.log');
     
-    if (File::exists($logPath)) {
+    if (\Illuminate\Support\Facades\File::exists($logPath)) {
         $lines = array_slice(file($logPath), -50);
-        $output .= "<b>Latest Error Logs:</b><br><br>";
+        $output .= "🚨 <b>Latest Error Logs:</b><br><br>";
         $output .= "<pre style='background:#111; color:#0f0; padding:20px; overflow-x:auto;'>" . implode("", $lines) . "</pre>";
     } else {
         $output .= "No log file exists yet! (The crash might be happening before Laravel even boots)";
@@ -194,3 +192,5 @@ Route::get('/rescue', function () {
 
     return $output;
 });
+
+require __DIR__.'/auth.php';
