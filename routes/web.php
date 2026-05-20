@@ -171,4 +171,12 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
+// Personal Portal
+Route::middleware(['auth'])->group(function () {
+    
+    Route::resource('attendances', AttendanceController::class);
+    
+    Route::get('/my-portal', [DashboardController::class, 'myPortal'])->name('dashboard.my-portal');
+});
+
 require __DIR__.'/auth.php';

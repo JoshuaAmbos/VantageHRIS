@@ -40,6 +40,12 @@
         </div>
 
         <nav class="flex-1 px-4 py-6 space-y-1 overflow-y-auto custom-scrollbar">
+
+            {{-- GROUP 1: OVERVIEW & SELF-SERVICE --}}
+            <div class="pb-2">
+                <p class="px-3 text-xs font-bold text-[#2168ab] uppercase tracking-widest">Workspace</p>
+            </div>
+
             <a href="{{ route('dashboard') }}"
                 class="flex items-center px-3 py-2.5 rounded-lg transition-all duration-150 group {{ request()->routeIs('dashboard') ? 'bg-[#eaf3fb] text-[#103456] font-semibold' : 'text-[#2168ab] hover:bg-[#f8fafc] hover:text-[#184e81]' }}">
                 <svg class="w-5 h-5 mr-3 transition-colors {{ request()->routeIs('dashboard') ? 'text-[#2982d6]' : 'text-[#549bde] group-hover:text-[#2982d6]' }}"
@@ -51,9 +57,49 @@
                 <span class="text-base">Dashboard</span>
             </a>
 
+            <a href="{{ route('dashboard.my-portal') }}"
+                class="flex items-center px-3 py-2.5 rounded-lg transition-all duration-150 group {{ request()->routeIs('dashboard.my-portal') ? 'bg-[#eaf3fb] text-[#103456] font-semibold' : 'text-[#2168ab] hover:bg-[#f8fafc] hover:text-[#184e81]' }}">
+                <svg class="w-5 h-5 mr-3 transition-colors {{ request()->routeIs('dashboard.my-portal') ? 'text-[#2982d6]' : 'text-[#549bde] group-hover:text-[#2982d6]' }}"
+                    fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round"
+                        d="M5.121 17.804A13.937 13.937 0 0112 16c2.5 0 4.847.655 6.879 1.804M15 10a3 3 0 11-6 0 3 3 0 016 0zm6 2a9 9 0 11-18 0 9 9 0 0118 0z">
+                    </path>
+                </svg>
+                <span class="text-base">My Portal</span>
+            </a>
+
+
+            {{-- GROUP 2: TIME TRACKING OPERATIONAL INDEXES --}}
+            <div class="pt-5 pb-2">
+                <p class="px-3 text-xs font-bold text-[#2168ab] uppercase tracking-widest">Time Logs</p>
+            </div>
+
+            <a href="{{ route('attendances.index') }}"
+                class="flex items-center px-3 py-2.5 rounded-lg transition-all duration-150 group {{ request()->routeIs('attendances.*') ? 'bg-[#eaf3fb] text-[#103456] font-semibold' : 'text-[#2168ab] hover:bg-[#f8fafc] hover:text-[#184e81]' }}">
+                <svg class="w-5 h-5 mr-3 transition-colors {{ request()->routeIs('attendances.*') ? 'text-[#2982d6]' : 'text-[#549bde] group-hover:text-[#2982d6]' }}"
+                    fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round"
+                        d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                </svg>
+                <span class="text-base">Attendances</span>
+            </a>
+
+            <a href="{{ route('leave-requests.index') }}"
+                class="flex items-center px-3 py-2.5 rounded-lg transition-all duration-150 group {{ request()->routeIs('leave-requests.*') ? 'bg-[#eaf3fb] text-[#103456] font-semibold' : 'text-[#2168ab] hover:bg-[#f8fafc] hover:text-[#184e81]' }}">
+                <svg class="w-5 h-5 mr-3 transition-colors {{ request()->routeIs('leave-requests.*') ? 'text-[#2982d6]' : 'text-[#549bde] group-hover:text-[#2982d6]' }}"
+                    fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round"
+                        d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2-2v12a2 2 0 002 2z">
+                    </path>
+                </svg>
+                <span class="text-base">Leave Requests</span>
+            </a>
+
+
+            {{-- GROUP 3: ADMINISTRATIVE SYSTEM ORGANIZATIONS --}}
             @if(in_array(auth()->user()->role, ['admin', 'hr', 'manager']))
                 <div class="pt-5 pb-2">
-                    <p class="px-3 text-xs font-bold text-[#2168ab] uppercase tracking-widest">Core HR</p>
+                    <p class="px-3 text-xs font-bold text-[#2168ab] uppercase tracking-widest">Management</p>
                 </div>
 
                 @if(in_array(auth()->user()->role, ['admin', 'hr']))
@@ -83,44 +129,9 @@
                 </a>
             @endif
 
-            <div class="pt-5 pb-2">
-                <p class="px-3 text-xs font-bold text-[#2168ab] uppercase tracking-widest">Time &amp; Access</p>
-            </div>
 
-            <a href="{{ route('attendances.index') }}"
-                class="flex items-center px-3 py-2.5 rounded-lg transition-all duration-150 group {{ request()->routeIs('attendances.*') ? 'bg-[#eaf3fb] text-[#103456] font-semibold' : 'text-[#2168ab] hover:bg-[#f8fafc] hover:text-[#184e81]' }}">
-                <svg class="w-5 h-5 mr-3 transition-colors {{ request()->routeIs('attendances.*') ? 'text-[#2982d6]' : 'text-[#549bde] group-hover:text-[#2982d6]' }}"
-                    fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round"
-                        d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                </svg>
-                <span class="text-base">Attendances</span>
-            </a>
-
-            <a href="{{ route('leave-requests.index') }}"
-                class="flex items-center px-3 py-2.5 rounded-lg transition-all duration-150 group {{ request()->routeIs('leave-requests.*') ? 'bg-[#eaf3fb] text-[#103456] font-semibold' : 'text-[#2168ab] hover:bg-[#f8fafc] hover:text-[#184e81]' }}">
-                <svg class="w-5 h-5 mr-3 transition-colors {{ request()->routeIs('leave-requests.*') ? 'text-[#2982d6]' : 'text-[#549bde] group-hover:text-[#2982d6]' }}"
-                    fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round"
-                        d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z">
-                    </path>
-                </svg>
-                <span class="text-base">Leave Requests</span>
-            </a>
-
+            {{-- GROUP 4: INTELLIGENCE SECURITY CONTROL ARRAYS --}}
             @if(in_array(auth()->user()->role, ['admin', 'hr']))
-                <a href="{{ route('users.index') }}"
-                    class="flex items-center px-3 py-2.5 rounded-lg transition-all duration-150 group {{ request()->routeIs('users.*') ? 'bg-[#eaf3fb] text-[#103456] font-semibold' : 'text-[#2168ab] hover:bg-[#f8fafc] hover:text-[#184e81]' }}">
-                    <svg class="w-5 h-5 mr-3 transition-colors {{ request()->routeIs('users.*') ? 'text-[#2982d6]' : 'text-[#549bde] group-hover:text-[#2982d6]' }}"
-                        fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round"
-                            d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z">
-                        </path>
-                    </svg>
-                    <span class="text-base">Users</span>
-                </a>
-
-                {{-- NEW: Intelligence & Operational Analytics Reporting Stream --}}
                 <div class="pt-5 pb-2">
                     <p class="px-3 text-xs font-bold text-[#2168ab] uppercase tracking-widest">Intelligence</p>
                 </div>
@@ -134,6 +145,17 @@
                         </path>
                     </svg>
                     <span class="text-base">HR Reports</span>
+                </a>
+
+                <a href="{{ route('users.index') }}"
+                    class="flex items-center px-3 py-2.5 rounded-lg transition-all duration-150 group {{ request()->routeIs('users.*') ? 'bg-[#eaf3fb] text-[#103456] font-semibold' : 'text-[#2168ab] hover:bg-[#f8fafc] hover:text-[#184e81]' }}">
+                    <svg class="w-5 h-5 mr-3 transition-colors {{ request()->routeIs('users.*') ? 'text-[#2982d6]' : 'text-[#549bde] group-hover:text-[#2982d6]' }}"
+                        fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                            d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z">
+                        </path>
+                    </svg>
+                    <span class="text-base">Users</span>
                 </a>
             @endif
         </nav>
