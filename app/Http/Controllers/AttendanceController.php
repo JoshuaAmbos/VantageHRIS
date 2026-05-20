@@ -48,6 +48,10 @@ class AttendanceController extends Controller
      */
     public function create()
     {
+        if (in_array(auth()->user()->role, ['employee', 'manager'])) {
+            abort(403, 'Unauthorized operation action.');
+        }
+
         $employees = Employee::all();
         $statuses = Attendance::getEnumValues('status');
         
@@ -59,6 +63,10 @@ class AttendanceController extends Controller
      */
     public function store(AttendanceRequest $request)
     {
+        if (in_array(auth()->user()->role, ['employee', 'manager'])) {
+            abort(403, 'Unauthorized operation action.');
+        }
+
         Attendance::create($request->validated());
         
         return redirect()->route('attendances.index')->with('success', 'Attendance recorded successfully!');
@@ -69,7 +77,18 @@ class AttendanceController extends Controller
      */
     public function show(string $id)
     {
+        $user = auth()->user();
         $attendance = Attendance::with('employee.department')->findOrFail($id);
+
+        // FIXED: Enforce absolute data access boundaries across standalone profiles
+        if ($user->role === 'employee' && $attendance->employee_id !== $user->employee->id) {
+            abort(403, 'Unauthorized record access path request.');
+        }
+
+        if ($user->role === 'manager' && ($attendance->employee->department_id ?? null) !== $user->employee->department_id) {
+            abort(403, 'Unauthorized record access path request.');
+        }
+
         return view('attendances.show', compact('attendance'));
     }
 
@@ -78,6 +97,10 @@ class AttendanceController extends Controller
      */
     public function edit(string $id)
     {
+        if (in_array(auth()->user()->role, ['employee', 'manager'])) {
+            abort(403, 'Unauthorized modification request framework.');
+        }
+
         $attendance = Attendance::findOrFail($id);
         $employees = Employee::all();
         $statuses = Attendance::getEnumValues('status');
@@ -90,6 +113,10 @@ class AttendanceController extends Controller
      */
     public function update(AttendanceRequest $request, string $id)
     {
+        if (in_array(auth()->user()->role, ['employee', 'manager'])) {
+            abort(403, 'Unauthorized modification request framework.');
+        }
+
         $attendance = Attendance::findOrFail($id);
         $attendance->update($request->validated());
 
@@ -101,6 +128,10 @@ class AttendanceController extends Controller
      */
     public function destroy(string $id)
     {
+        if (in_array(auth()->user()->role, ['employee', 'manager'])) {
+            abort(403, 'Unauthorized removal execution directive.');
+        }
+
         $attendance = Attendance::findOrFail($id);
         $attendance->delete();
 
@@ -120,7 +151,6 @@ class AttendanceController extends Controller
         $today = Carbon::today()->toDateString();
         $now = Carbon::now();
 
-        // Prevent duplicate punch-ins for the same calendar date
         $existingRecord = Attendance::where('employee_id', $employee->id)
             ->where('attendance_date', $today)
             ->first();
@@ -129,7 +159,6 @@ class AttendanceController extends Controller
             return redirect()->back()->with('error', 'You have already clocked in for today.');
         }
 
-        // Auto-determine punch quality status parameters against an 08:00 AM baseline
         $cutoffTime = Carbon::today()->setHour(8)->setMinute(0)->setSecond(0);
         $status = $now->greaterThan($cutoffTime) ? 'late' : 'present';
 
@@ -158,7 +187,6 @@ class AttendanceController extends Controller
         $today = Carbon::today()->toDateString();
         $now = Carbon::now();
 
-        // Locate the matching time-in record that needs closure
         $attendance = Attendance::where('employee_id', $employee->id)
             ->where('attendance_date', $today)
             ->first();

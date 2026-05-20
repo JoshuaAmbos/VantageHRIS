@@ -59,9 +59,10 @@ class LeaveRequestController extends Controller
     public function store(LeaveRequestRequest $request)
     {
         $validated = $request->validated();
+        $user = auth()->user();
 
-        $employeeId = Auth::user()->employee->id;
-        $validated['employee_id'] = $employeeId;
+        // FIXED: Explicitly secure input data ownership properties
+        $validated['employee_id'] = $user->employee->id;
         $validated['status'] = LeaveRequest::STATUS_PENDING;
         $validated['approved_by'] = NULL;
 
@@ -75,7 +76,17 @@ class LeaveRequestController extends Controller
      */
     public function show(string $id)
     {
+        $user = auth()->user();
         $leaveRequest = LeaveRequest::with(['submittedBy', 'approvedBy'])->findOrFail($id);
+
+        // FIXED: Verify profile access alignment bounds for employees and managers
+        if ($user->role === 'employee' && $leaveRequest->employee_id !== $user->employee->id) {
+            abort(403, 'Unauthorized access request.');
+        }
+
+        if ($user->role === 'manager' && ($leaveRequest->submittedBy->department_id ?? null) !== $user->employee->department_id) {
+            abort(403, 'Unauthorized access request.');
+        }
 
         return view('leave-requests.show', compact('leaveRequest'));
     }
@@ -85,9 +96,18 @@ class LeaveRequestController extends Controller
      */
     public function edit(string $id)
     {
+        $user = auth()->user();
         $request = LeaveRequest::findOrFail($id);
         
-        // Prevent modifications to already finalized requests
+        // FIXED: Enforce ownership checks before opening edit view layout
+        if ($user->role === 'employee' && $request->employee_id !== $user->employee->id) {
+            abort(403, 'Unauthorized modification request.');
+        }
+
+        if ($user->role === 'manager' && ($request->submittedBy->department_id ?? null) !== $user->employee->department_id) {
+            abort(403, 'Unauthorized modification request.');
+        }
+
         if ($request->status !== LeaveRequest::STATUS_PENDING) {
             return redirect()->route('leave-requests.index')->with('error', 'Cannot edit a finalized leave request.');
         }
@@ -102,17 +122,29 @@ class LeaveRequestController extends Controller
      */
     public function update(LeaveRequestRequest $request, string $id)
     {
-        $leaveRequest = LeaveRequest::findOrFail($id);
+        $user = auth()->user();
+        $leaveRequest = LeaveRequest::with('submittedBy')->findOrFail($id);
         
-        // Prevent updates to already finalized requests
+        // FIXED: Enforce mutation layer isolation boundaries
+        if ($user->role === 'employee' && $leaveRequest->employee_id !== $user->employee->id) {
+            abort(403, 'Unauthorized modification request.');
+        }
+
+        if ($user->role === 'manager' && ($leaveRequest->submittedBy->department_id ?? null) !== $user->employee->department_id) {
+            abort(403, 'Unauthorized modification request.');
+        }
+
         if ($leaveRequest->status !== LeaveRequest::STATUS_PENDING) {
             return redirect()->route('leave-requests.index')->with('error', 'Cannot update a finalized leave request.');
         }
 
         $validated = $request->validated();
-        $employeeId = Auth::user()->employee->id;
+        
+        // FIXED: Maintain original record ownership assignments during updates
+        if ($user->role === 'employee') {
+            $validated['employee_id'] = $user->employee->id;
+        }
 
-        $validated['employee_id'] = $employeeId;
         $validated['status'] = LeaveRequest::STATUS_PENDING;
         $validated['approved_by'] = NULL;
 
@@ -126,10 +158,19 @@ class LeaveRequestController extends Controller
      */
     public function destroy(string $id)
     {
-        $request = LeaveRequest::findOrFail($id);
+        $user = auth()->user();
+        $request = LeaveRequest::with('submittedBy')->findOrFail($id);
         
-        // Prevent employees from dropping approved logs
-        if (auth()->user()->role === 'employee' && $request->status !== LeaveRequest::STATUS_PENDING) {
+        // FIXED: Secure deletion access layers across all roles
+        if ($user->role === 'employee' && $request->employee_id !== $user->employee->id) {
+            abort(403, 'Unauthorized deletion request.');
+        }
+
+        if ($user->role === 'manager' && ($request->submittedBy->department_id ?? null) !== $user->employee->department_id) {
+            abort(403, 'Unauthorized deletion request.');
+        }
+
+        if ($user->role === 'employee' && $request->status !== LeaveRequest::STATUS_PENDING) {
             return redirect()->route('leave-requests.index')->with('error', 'Cannot delete a processed leave request.');
         }
 
@@ -157,7 +198,7 @@ class LeaveRequestController extends Controller
 
         if ($user->role === 'manager') {
             $managerDeptId = $user->employee->department_id;
-            if ($leaveRequest->submittedBy->department_id !== $managerDeptId) {
+            if (($leaveRequest->submittedBy->department_id ?? null) !== $managerDeptId) {
                 abort(403, 'You can only review leave requests within your department.');
             }
         }
@@ -167,6 +208,6 @@ class LeaveRequestController extends Controller
             'approved_by' => $user->employee->id ?? null,
         ]);
 
-        return redirect()->route('leave-requests.index')->with('success', "Leave request status updated to {$request->status}!");
+        return redirect()->route('leave-requests.index')->with('success', "Leave request status updated to {$request->input('status')}!");
     }
 }

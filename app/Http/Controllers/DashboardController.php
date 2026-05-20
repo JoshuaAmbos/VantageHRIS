@@ -103,4 +103,19 @@ class DashboardController extends Controller
             'recentActivities'
         ));
     }
+    
+    public function myPortal()
+    {
+        $employee = auth()->user()->employee;
+        
+        if (!$employee) {
+            abort(404, 'No employee profile linked to this user account.');
+        }
+
+        // Pull recent personal historical data stacks
+        $recentAttendance = $employee->attendances()->latest()->take(5)->get();
+        $leaveRequests = $employee->leaveRequests()->latest()->get();
+
+        return view('dashboard.my-portal', compact('employee', 'recentAttendance', 'leaveRequests'));
+    }
 }

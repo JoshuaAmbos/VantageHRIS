@@ -7,8 +7,6 @@
         <h3 class="text-xl font-bold text-[#081a2b] mb-6 tracking-tight">All Departments</h3>
 
         <div class="flex flex-col sm:flex-row justify-between items-stretch sm:items-center gap-4 mb-6">
-
-            {{-- Search Bar --}}
             <div class="w-full sm:max-w-xs">
                 <x-search-bar :action="route('departments.index')" :value="$search"
                     placeholder="Search departments..." />
@@ -47,14 +45,15 @@
                         </tr>
                     </thead>
                     <tbody class="bg-white divide-y divide-[#e2e8f0]">
-                        @foreach ($departments as $department)
+                        @forelse ($departments as $department)
                             <tr class="hover:bg-[#f8fafc]/50 transition-colors">
                                 <td class="px-6 py-4 whitespace-nowrap">
                                     <div class="text-base font-bold text-[#081a2b]">{{ $department->name }}</div>
                                 </td>
 
                                 <td class="px-6 py-4 whitespace-nowrap">
-                                    <div class="text-base text-[#103456]">{{ $department->description }}</div>
+                                    <div class="text-base text-[#103456] truncate max-w-xs"
+                                        title="{{ $department->description }}">{{ $department->description }}</div>
                                 </td>
 
                                 <td class="px-6 py-4 whitespace-nowrap">
@@ -68,15 +67,15 @@
                                 </td>
 
                                 <td class="px-6 py-4 whitespace-nowrap">
-                                    @if($department->status === \App\Models\Department::STATUS_ACTIVE)
+                                    @if(($department->status ?? 'active') === 'active')
                                         <span
                                             class="px-3 py-1 inline-flex text-xs font-bold rounded-full bg-green-300 text-green-900">
-                                            {{ str($department->status)->ucfirst() }}
+                                            Active
                                         </span>
                                     @else
                                         <span
                                             class="px-3 py-1 inline-flex text-xs font-bold rounded-full bg-red-300 text-red-900">
-                                            {{ str($department->status)->ucfirst() }}
+                                            Inactive
                                         </span>
                                     @endif
                                 </td>
@@ -99,17 +98,22 @@
                                     </div>
                                 </td>
                             </tr>
-                        @endforeach
+                        @empty
+                            <tr>
+                                <td colspan="5" class="px-6 py-12 text-center text-sm text-slate-400 italic bg-white">
+                                    No departments found.
+                                </td>
+                            </tr>
+                        @endforelse
                     </tbody>
                 </table>
             </div>
+
+            @if(method_exists($departments, 'links') && $departments->hasPages())
+                <div class="px-6 py-4 border-t border-[#e2e8f0] bg-[#f8fafc]">
+                    {{ $departments->links() }}
+                </div>
+            @endif
         </div>
-
-
-        @if(method_exists($departments, 'links') && $departments->hasPages())
-            <div class="px-6 py-4 border-t border-[#e2e8f0] bg-[#f8fafc] mt-auto">
-                {{ $departments->links() }}
-            </div>
-        @endif
     </div>
 </x-app-layout>

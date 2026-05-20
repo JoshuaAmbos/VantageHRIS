@@ -17,7 +17,18 @@ class EmployeeController extends Controller
     public function index(Request $request)
     {
         $search = $request->input('search');
-        $employees = Employee::search($search)->latest()->paginate(7)->withQueryString();
+        $user = auth()->user();
+
+        // Start base query with local search criteria
+        $query = Employee::search($search);
+
+        // FIXED: Restrict managers strictly to their own assigned team headcount
+        if ($user->role === 'manager') {
+            $managerDeptId = $user->employee->department_id ?? null;
+            $query->where('department_id', $managerDeptId);
+        }
+
+        $employees = $query->latest()->paginate(7)->withQueryString();
 
         return view('employees.index', compact('employees', 'search'));
     }
@@ -27,6 +38,11 @@ class EmployeeController extends Controller
      */
     public function create()
     {
+        // Managers should not manually onboard new entries via this controller
+        if (auth()->user()->role === 'manager') {
+            abort(403, 'Unauthorized administrative request action.');
+        }
+
         $departments = Department::all();
         $positions = Employee::POSITIONS;
         $statuses = Employee::EMPLOYMENT_STATUSES;
@@ -39,6 +55,10 @@ class EmployeeController extends Controller
      */
     public function store(EmployeeRequest $request)
     {
+        if (auth()->user()->role === 'manager') {
+            abort(403, 'Unauthorized administrative request action.');
+        }
+
         $validated = $request->validated();
 
         $role = 'employee';
@@ -68,7 +88,13 @@ class EmployeeController extends Controller
      */
     public function show(string $id)
     {
+        $user = auth()->user();
         $employee = Employee::with('department')->findOrFail($id);
+
+        // Prevent managers from accessing out-of-department profiles
+        if ($user->role === 'manager' && $employee->department_id !== ($user->employee->department_id ?? null)) {
+            abort(403, 'Unauthorized scope access boundary request.');
+        }
 
         return view('employees.show', compact('employee'));
     }
@@ -78,7 +104,14 @@ class EmployeeController extends Controller
      */
     public function edit(string $id)
     {
+        $user = auth()->user();
         $employee = Employee::findOrFail($id);
+
+        // Enforce access barriers on modification form requests
+        if ($user->role === 'manager' && $employee->department_id !== ($user->employee->department_id ?? null)) {
+            abort(403, 'Unauthorized scope access boundary request.');
+        }
+
         $departments = Department::all();
         $positions = Employee::POSITIONS;
         $statuses = Employee::EMPLOYMENT_STATUSES;
@@ -91,12 +124,17 @@ class EmployeeController extends Controller
      */
     public function update(EmployeeRequest $request, string $id)
     {        
+        $user = auth()->user();
         $employee = Employee::findOrFail($id);
-        $validated = $request->validated();
 
+        // FIXED: Secure database mutation layers from cross-tenant input submission parametrs
+        if ($user->role === 'manager' && $employee->department_id !== ($user->employee->department_id ?? null)) {
+            abort(403, 'Unauthorized scope access boundary request.');
+        }
+
+        $validated = $request->validated();
         $employee->update($validated);
 
-        // Keep the connected user profile email in sync with the employee profile record
         if ($employee->user) {
             $employee->user->update([
                 'name'  => $validated['first_name'] . ' ' . $validated['last_name'],
@@ -112,8 +150,14 @@ class EmployeeController extends Controller
      */
     public function destroy(string $id)
     {
+        $user = auth()->user();
         $employee = Employee::findOrFail($id);
         
+        // Enforce absolute destructive override safety constraints
+        if ($user->role === 'manager') {
+            abort(403, 'Managers lack system privileges to execute removal procedures.');
+        }
+
         $employee->delete();
 
         return redirect()->route('employees.index')->with('success', 'Employee deleted successfully!');
