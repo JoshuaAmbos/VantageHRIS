@@ -6,7 +6,6 @@
     <div class="mt-6 px-2 sm:px-0">
         <h3 class="text-xl font-bold text-[#081a2b] mb-6 tracking-tight">All Leave Requests</h3>
 
-        {{-- Action Ribbon (Search & Create aligned with your reference layout) --}}
         <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
             <div class="w-full sm:max-w-xs">
                 <x-search-bar :action="route('leave-requests.index')" :value="$search ?? ''"
@@ -23,7 +22,6 @@
             </a>
         </div>
 
-        {{-- Data Grid Container (Non-scrollable layout optimized for desktop viewports) --}}
         <div class="bg-white rounded-xl shadow-sm border border-[#e2e8f0] overflow-hidden flex flex-col w-full">
             <div class="overflow-x-auto min-w-full">
                 <table class="min-w-full divide-y divide-[#e2e8f0] table-fixed">
@@ -42,10 +40,6 @@
                                 Duration
                             </th>
                             <th scope="col"
-                                class="px-4 py-3.5 text-left text-sm font-bold text-[#2168ab] uppercase tracking-wider whitespace-nowrap">
-                                Reason
-                            </th>
-                            <th scope="col"
                                 class="w-28 px-4 py-3.5 text-left text-sm font-bold text-[#2168ab] uppercase tracking-wider whitespace-nowrap">
                                 Status
                             </th>
@@ -54,7 +48,7 @@
                                 Approved By
                             </th>
                             <th scope="col"
-                                class="w-36 px-4 py-3.5 text-right text-sm font-bold text-[#2168ab] uppercase tracking-wider whitespace-nowrap">
+                                class="w-44 px-4 py-3.5 text-right text-sm font-bold text-[#2168ab] uppercase tracking-wider whitespace-nowrap">
                                 Actions
                             </th>
                         </tr>
@@ -63,7 +57,6 @@
                         @forelse ($leaveRequests as $request)
                             <tr class="hover:bg-[#f8fafc]/50 transition-colors">
 
-                                {{-- Submitted By Cell --}}
                                 <td class="px-4 py-3.5 whitespace-nowrap truncate">
                                     <div class="flex items-center">
                                         <div
@@ -72,19 +65,17 @@
                                         </div>
                                         <div class="ml-2.5 truncate">
                                             <div class="text-base font-bold text-[#081a2b] truncate">
-                                                {{ $request->submittedBy->first_name }}
-                                                {{ $request->submittedBy->last_name }}
+                                                {{ $request->submittedBy->first_name ?? 'System' }}
+                                                {{ $request->submittedBy->last_name ?? 'User' }}
                                             </div>
                                         </div>
                                     </div>
                                 </td>
 
-                                {{-- Leave Type Cell --}}
                                 <td class="px-4 py-3.5 whitespace-nowrap">
                                     <div class="text-base text-[#103456] font-medium">{{ $request->leave_type }}</div>
                                 </td>
 
-                                {{-- Duration Dates Cell --}}
                                 <td class="px-4 py-3.5 whitespace-nowrap">
                                     <div class="flex flex-col">
                                         <span class="text-base font-bold text-[#081a2b]">
@@ -96,14 +87,6 @@
                                     </div>
                                 </td>
 
-                                {{-- Reason Cell --}}
-                                <td class="px-4 py-3.5">
-                                    <div class="text-base text-slate-500 font-medium truncate max-w-xs">
-                                        {{ $request->reason }}
-                                    </div>
-                                </td>
-
-                                {{-- Status Solid Pastel Badge Cell --}}
                                 <td class="px-4 py-3.5 whitespace-nowrap">
                                     @if ($request->status === App\Models\LeaveRequest::STATUS_APPROVED)
                                         <span
@@ -123,7 +106,6 @@
                                     @endif
                                 </td>
 
-                                {{-- Approved By Cell --}}
                                 <td class="px-4 py-3.5 whitespace-nowrap truncate">
                                     <div class="text-base text-[#103456] font-medium truncate">
                                         @if($request->approvedBy)
@@ -134,13 +116,19 @@
                                     </div>
                                 </td>
 
-                                {{-- Actions Action Buttons Cell --}}
                                 <td class="px-4 py-3.5 whitespace-nowrap text-right text-base font-semibold">
                                     <div class="flex items-center justify-end gap-1.5">
-                                        <a href="{{ route('leave-requests.edit', $request->id) }}"
-                                            class="text-[#103456] hover:text-[#081a2b] bg-[#f8fafc] hover:bg-[#e2e8f0] px-2.5 py-1 rounded-lg transition-colors border border-[#e2e8f0] text-sm font-bold shadow-xs">
-                                            Edit
+                                        <a href="{{ route('leave-requests.show', $request->id) }}"
+                                            class="text-[#2982d6] hover:text-[#103456] bg-[#eaf3fb] hover:bg-[#d4e6f7] px-3 py-1.5 rounded-lg transition-colors text-sm font-bold shadow-xs">
+                                            View
                                         </a>
+
+                                        @if($request->status === App\Models\LeaveRequest::STATUS_PENDING)
+                                            <a href="{{ route('leave-requests.edit', $request->id) }}"
+                                                class="text-[#103456] hover:text-[#081a2b] bg-[#f8fafc] hover:bg-[#e2e8f0] px-2.5 py-1 rounded-lg transition-colors border border-[#e2e8f0] text-sm font-bold shadow-xs">
+                                                Edit
+                                            </a>
+                                        @endif
 
                                         <form action="{{ route('leave-requests.destroy', $request->id) }}" method="POST"
                                             class="inline" onsubmit="return confirm('Delete this record?');">
@@ -156,7 +144,7 @@
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="7" class="px-6 py-8 text-center text-base text-slate-400 italic bg-white">
+                                <td colspan="6" class="px-6 py-8 text-center text-base text-slate-400 italic bg-white">
                                     No leave requests found records.
                                 </td>
                             </tr>
@@ -165,7 +153,6 @@
                 </table>
             </div>
 
-            {{-- Optional Pagination controls with matching margins --}}
             @if(method_exists($leaveRequests, 'links') && $leaveRequests->hasPages())
                 <div class="px-6 py-4 border-t border-[#e2e8f0] bg-[#f8fafc] mt-auto">
                     {{ $leaveRequests->links() }}

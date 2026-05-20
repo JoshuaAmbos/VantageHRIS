@@ -2,8 +2,6 @@
 
 namespace App\Http\Requests;
 
-use App\Models\Attendance;
-use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
@@ -19,17 +17,17 @@ class AttendanceRequest extends FormRequest
 
     /**
      * Get the validation rules that apply to the request.
-     *
-     * @return array<string, ValidationRule|array<mixed>|string>
      */
     public function rules(): array
     {
+        $validStatuses = ['present', 'late', 'absent', 'on leave'];
+
         return [
-            'employee_id' => 'required|exists:employees,id',
-            'attendance_date' => 'required|date',
-            'time_in' => ['required', 'date_format:H:i'],
-            'time_out' => ['required', 'date_format:H:i', 'after:time_in'],
-            'status' => ['required', Rule::in(Attendance::STATUSES)],
+            'employee_id' => ['required', 'exists:employees,id'],
+            'attendance_date' => ['required', 'date', 'date_format:Y-m-d'],
+            'time_in' => ['required', 'date_format:H:i:s,H:i'],
+            'time_out' => ['required', 'date_format:H:i:s,H:i', 'after:time_in'],
+            'status' => ['required', Rule::in($validStatuses)],
             'remarks' => ['nullable', 'string', 'max:255'],
         ];
     }
@@ -40,7 +38,7 @@ class AttendanceRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'time_out.after' => 'The time out must be a later time than the time in.',
+            'time_out.after' => 'The shift time out must be a later chronologic timestamp than the time in field.',
             'employee_id.exists' => 'The selected employee record does not exist in our system.',
         ];
     }

@@ -43,8 +43,18 @@ class DepartmentController extends Controller
      */
     public function store(DepartmentRequest $request)
     {
-        Department::create($request->validated());
-        return redirect()->route('departments.index')->with('success', 'Department succesfully added!');    
+        $validated = $request->validated();
+        $department = Department::create($validated);
+
+        // Auto-upgrade the assigned employee to the manager role if one is set
+        if (!empty($validated['manager_id'])) {
+            $employee = Employee::find($validated['manager_id']);
+            if ($employee && $employee->user && $employee->user->role === 'employee') {
+                $employee->user->update(['role' => 'manager']);
+            }
+        }
+
+        return redirect()->route('departments.index')->with('success', 'Department successfully added!');    
     }
 
     /**
@@ -72,18 +82,39 @@ class DepartmentController extends Controller
      */
     public function update(DepartmentRequest $request, string $id)
     {
-        // 1. Get the data that passed validation in DepartmentRequest
         $validated = $request->validated();
-
-        // 2. Find the specific department or throw a 404 error if not found
         $department = Department::findOrFail($id);
 
-        // 3. Update the retrieved instance with the validated data
+        // Capture the previous manager ID to check if the assignment is changing
+        $oldManagerId = $department->manager_id;
+
         $department->update($validated);
 
-        // 4. Redirect back to the list with a success message
+        // If the manager has been updated or removed, sync user roles accordingly
+        if ((int)$oldManagerId !== (int)$department->manager_id) {
+            
+            // Demote the previous manager if they don't manage any other departments
+            if ($oldManagerId) {
+                $oldManager = Employee::find($oldManagerId);
+                if ($oldManager && $oldManager->user) {
+                    $stillManagesCount = Department::where('manager_id', $oldManagerId)->count();
+                    if ($stillManagesCount === 0 && $oldManager->user->role === 'manager') {
+                        $oldManager->user->update(['role' => 'employee']);
+                    }
+                }
+            }
+
+            // Upgrade the newly assigned manager
+            if ($department->manager_id) {
+                $newManager = Employee::find($department->manager_id);
+                if ($newManager && $newManager->user && $newManager->user->role === 'employee') {
+                    $newManager->user->update(['role' => 'manager']);
+                }
+            }
+        }
+
         return redirect()->route('departments.index')->with('success', 'Department updated successfully!');
-}
+    }
 
     /**
      * Remove the specified resource from storage.
@@ -91,8 +122,20 @@ class DepartmentController extends Controller
     public function destroy(string $id)
     {
         $department = Department::findOrFail($id);
+        $managerId = $department->manager_id;
 
         $department->delete();
+
+        // Demote the manager if they aren't assigned to any remaining departments
+        if ($managerId) {
+            $manager = Employee::find($managerId);
+            if ($manager && $manager->user) {
+                $stillManagesCount = Department::where('manager_id', $managerId)->count();
+                if ($stillManagesCount === 0 && $manager->user->role === 'manager') {
+                    $manager->user->update(['role' => 'employee']);
+                }
+            }
+        }
 
         return redirect()->route('departments.index')->with('success', 'Department deleted successfully!');
     }

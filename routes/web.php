@@ -121,6 +121,9 @@ Route::middleware(['auth', 'role:admin,hr,manager,employee'])->group(function(){
 
         // Delete
         Route::delete('/{id}', [LeaveRequestController::class, 'destroy'])->name('destroy');
+
+        // Updating STATUS
+        Route::patch('/{id}/status', [LeaveRequestController::class, 'updateStatus'])->name('update-status');
     });
 });
 

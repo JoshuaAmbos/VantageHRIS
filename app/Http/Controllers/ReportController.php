@@ -16,7 +16,7 @@ class ReportController extends Controller
     public function index()
     {
         $totalEmployees = Employee::count();
-        $pendingLeaves = LeaveRequest::where('status', LeaveRequest::STATUS_PENDING ?? 'Pending')->count();
+        $pendingLeaves = LeaveRequest::where('status', 'Pending')->count();
 
         $positionDistribution = Employee::select('position', DB::raw('count(*) as total'))
             ->groupBy('position')
@@ -28,25 +28,32 @@ class ReportController extends Controller
     /**
      * Generate an analytical overview of daily attendance trends.
      */
-   public function attendanceReport(Request $request)
+    public function attendanceReport(Request $request)
     {
         $date = $request->input('date', now()->format('Y-m-d'));
 
         $attendanceSummary = [
-            Attendance::STATUS_PRESENT  => 0,
-            Attendance::STATUS_LATE     => 0,
-            Attendance::STATUS_ON_LEAVE => 0,
-            Attendance::STATUS_ABSENT   => 0,
+            'present'  => 0,
+            'late'     => 0,
+            'on leave' => 0,
+            'absent'   => 0,
         ];
 
-        $attendances = Attendance::with('employee')->whereDate('attendance_date', $date)->paginate(6);
+        // Fetch total aggregates across all records for the target day
+        $globalDayRecords = Attendance::whereDate('attendance_date', $date)->get();
 
-        foreach ($attendances as $attendance) {
+        foreach ($globalDayRecords as $attendance) {
             $statusKey = strtolower(trim($attendance->status));
             if (array_key_exists($statusKey, $attendanceSummary)) {
                 $attendanceSummary[$statusKey]++;
             }
         }
+
+        // Fetch a separate, paginated subset strictly for the list view UI component
+        $attendances = Attendance::with('employee.department')
+            ->whereDate('attendance_date', $date)
+            ->paginate(15) // Expanded to 15 for better analytical scanning
+            ->withQueryString();
 
         return view('reports.attendance', compact('attendanceSummary', 'attendances', 'date'));
     }
@@ -61,6 +68,14 @@ class ReportController extends Controller
             ->get()
             ->pluck('count', 'status')
             ->toArray();
+
+        // Ensure missing statuses default to 0 so views don't encounter undefined offset notices
+        $statuses = ['Pending', 'Approved', 'Rejected'];
+        foreach ($statuses as $status) {
+            if (!isset($leaveSummary[$status])) {
+                $leaveSummary[$status] = 0;
+            }
+        }
 
         $typeDistribution = LeaveRequest::select('leave_type', DB::raw('count(*) as total'))
             ->groupBy('leave_type')

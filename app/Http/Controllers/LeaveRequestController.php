@@ -19,15 +19,24 @@ class LeaveRequestController extends Controller
         $user = auth()->user();
 
         if ($user->role === 'employee') {
-            $leaveRequests = LeaveRequest::search($search)->where('employee_id', $user->employee->id)->paginate(7)->withQueryString();
+            $leaveRequests = LeaveRequest::search($search)
+                ->where('employee_id', $user->employee->id)
+                ->paginate(7)
+                ->withQueryString();
         } elseif ($user->role === 'manager') {
             $managerDeptId = $user->employee->department_id;
-            $leaveRequests = LeaveRequest::search($search)->whereHas('submittedBy', function ($query) use ($managerDeptId) {
-                $query->where('department_id', $managerDeptId);
-            })->with('submittedBy')->paginate(7)->withQueryString();
+            $leaveRequests = LeaveRequest::search($search)
+                ->whereHas('submittedBy', function ($query) use ($managerDeptId) {
+                    $query->where('department_id', $managerDeptId);
+                })
+                ->with('submittedBy')
+                ->paginate(7)
+                ->withQueryString();
         } else {
-
-            $leaveRequests = LeaveRequest::search($search)->with('submittedBy')->paginate(7)->withQueryString();
+            $leaveRequests = LeaveRequest::search($search)
+                ->with('submittedBy')
+                ->paginate(7)
+                ->withQueryString();
         }
 
         return view('leave-requests.index', compact('leaveRequests', 'search'));
@@ -40,7 +49,6 @@ class LeaveRequestController extends Controller
     {
         $leaveRequests = LeaveRequest::all();
         $types = LeaveRequest::getEnumValues('leave_type');
-        
 
         return view('leave-requests.create', compact('leaveRequests', 'types'));
     }
@@ -50,21 +58,16 @@ class LeaveRequestController extends Controller
      */
     public function store(LeaveRequestRequest $request)
     {
-        // Validate    
         $validated = $request->validated();
 
-        // Fetch logged-in user, resolve their employee profile, and grab the primary id
         $employeeId = Auth::user()->employee->id;
-        // Inject backend variables
         $validated['employee_id'] = $employeeId;
         $validated['status'] = LeaveRequest::STATUS_PENDING;
         $validated['approved_by'] = NULL;
 
-        // Create leave request
         LeaveRequest::create($validated);
 
         return redirect()->route('leave-requests.index')->with('success', 'Leave request submitted successfully!');
-
     }
 
     /**
@@ -72,9 +75,9 @@ class LeaveRequestController extends Controller
      */
     public function show(string $id)
     {
-        $request = LeaveRequest::findOrFail($id);
+        $leaveRequest = LeaveRequest::with(['submittedBy', 'approvedBy'])->findOrFail($id);
 
-        return view('leave-requests.show', compact('request'));
+        return view('leave-requests.show', compact('leaveRequest'));
     }
 
     /**
@@ -83,6 +86,12 @@ class LeaveRequestController extends Controller
     public function edit(string $id)
     {
         $request = LeaveRequest::findOrFail($id);
+        
+        // Prevent modifications to already finalized requests
+        if ($request->status !== LeaveRequest::STATUS_PENDING) {
+            return redirect()->route('leave-requests.index')->with('error', 'Cannot edit a finalized leave request.');
+        }
+
         $types = LeaveRequest::getEnumValues('leave_type');
 
         return view('leave-requests.edit', compact('request', 'types'));
@@ -93,19 +102,21 @@ class LeaveRequestController extends Controller
      */
     public function update(LeaveRequestRequest $request, string $id)
     {
-        $request = LeaveRequest::findOrFail($id);
+        $leaveRequest = LeaveRequest::findOrFail($id);
         
-        $validated = $request->validated();
+        // Prevent updates to already finalized requests
+        if ($leaveRequest->status !== LeaveRequest::STATUS_PENDING) {
+            return redirect()->route('leave-requests.index')->with('error', 'Cannot update a finalized leave request.');
+        }
 
-        // Fetch logged-in user, resolve their employee profile, and grab the primary id
+        $validated = $request->validated();
         $employeeId = Auth::user()->employee->id;
 
-        // Inject backend variables
         $validated['employee_id'] = $employeeId;
         $validated['status'] = LeaveRequest::STATUS_PENDING;
         $validated['approved_by'] = NULL;
 
-        $request->update($validated);
+        $leaveRequest->update($validated);
 
         return redirect()->route('leave-requests.index')->with('success', 'Leave request updated successfully!');
     }
@@ -116,8 +127,46 @@ class LeaveRequestController extends Controller
     public function destroy(string $id)
     {
         $request = LeaveRequest::findOrFail($id);
+        
+        // Prevent employees from dropping approved logs
+        if (auth()->user()->role === 'employee' && $request->status !== LeaveRequest::STATUS_PENDING) {
+            return redirect()->route('leave-requests.index')->with('error', 'Cannot delete a processed leave request.');
+        }
+
         $request->delete();
 
         return redirect()->route('leave-requests.index')->with('success', 'Leave request deleted successfully!');
+    }
+
+    /**
+     * Process leave approvals or rejections for authorized roles.
+     */
+    public function updateStatus(Request $request, string $id)
+    {
+        $user = auth()->user();
+
+        if (!in_array($user->role, ['admin', 'hr', 'manager'])) {
+            abort(403, 'Unauthorized action.');
+        }
+
+        $request->validate([
+            'status' => 'required|in:Approved,Rejected',
+        ]);
+
+        $leaveRequest = LeaveRequest::with('submittedBy')->findOrFail($id);
+
+        if ($user->role === 'manager') {
+            $managerDeptId = $user->employee->department_id;
+            if ($leaveRequest->submittedBy->department_id !== $managerDeptId) {
+                abort(403, 'You can only review leave requests within your department.');
+            }
+        }
+
+        $leaveRequest->update([
+            'status' => $request->input('status'),
+            'approved_by' => $user->employee->id ?? null,
+        ]);
+
+        return redirect()->route('leave-requests.index')->with('success', "Leave request status updated to {$request->status}!");
     }
 }

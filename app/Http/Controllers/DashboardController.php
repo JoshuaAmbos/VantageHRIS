@@ -21,24 +21,19 @@ class DashboardController extends Controller
     {
         $user = Auth::user();
         $recentActivities = HrActivity::with('user')->latest()->take(5)->get();
-
         $todayDate = Carbon::today()->toDateString();
         
-        if (in_array($user->role, ['admin', 'hr'])) {
-            $totalRequests   = LeaveRequest::count();
-            $pendingRequests = LeaveRequest::where('status', 'Pending')->count();
-        } else {
-            $totalRequests   = LeaveRequest::where('employee_id', $user->employee->id)->count();
-            $pendingRequests = LeaveRequest::where('employee_id', $user->employee->id)
-                ->where('status', 'Pending')
-                ->count();
-        }
+        // Ensure the logged-in user has an employee profile
+        $employeeProfile = $user->employee;
 
+        // ADMIN & HR GLOBAL ACCESS LEVEL
         if (in_array($user->role, ['admin', 'hr'])) {
-            $totalEmployees        = Employee::count();
-            $totalDepartments      = Department::count();
-            $numActiveDepartments  = Department::where('status', 'active')->count();
-            $totalUsers            = User::count();
+            $totalRequests = LeaveRequest::count();
+            $pendingRequests = LeaveRequest::where('status', 'Pending')->count();
+            $totalEmployees = Employee::count();
+            $totalDepartments = Department::count();
+            $numActiveDepartments = Department::where('status', 'active')->count();
+            $totalUsers = User::count();
             
             $numEmployeesMonth = Employee::whereMonth('hire_date', Carbon::now()->month)
                 ->whereYear('hire_date', Carbon::now()->year)
@@ -56,17 +51,46 @@ class DashboardController extends Controller
             ));
         }
 
-        $attendanceToday = Attendance::where('employee_id', $user->employee->id)
-            ->where('attendance_date', $todayDate)
-            ->first();
+        //  DEPARTMENT MANAGER SUPERVISORY LEVEL
+        if ($user->role === 'manager' && $employeeProfile) {
+            $myDepartmentId = $employeeProfile->department_id;
 
+            // Gather metrics restricted strictly to their assigned team division
+            $totalEmployees = Employee::where('department_id', $myDepartmentId)->count();
+            $totalRequests = LeaveRequest::whereHas('submittedBy', function ($q) use ($myDepartmentId) {
+                $q->where('department_id', $myDepartmentId); 
+                })->count();
+            $pendingRequests   = LeaveRequest::where('status', 'Pending')->whereHas('submittedBy', function ($q) use ($myDepartmentId) {
+                $q->where('department_id', $myDepartmentId);
+                })->count();
+
+            // Self clock-in tracking metrics
+            $attendanceToday = Attendance::where('employee_id', $employeeProfile->id)
+                ->where('attendance_date', $todayDate)
+                ->first();
+            $todayStatus = $attendanceToday ? str($attendanceToday->status)->title() : 'Not Clocked In';
+
+            return view('dashboard', compact(
+                'totalEmployees',
+                'totalRequests',
+                'pendingRequests',
+                'todayStatus',
+                'recentActivities'
+            ));
+        }
+
+        //  STANDARD EMPLOYEE PORTAL LEVEL
+        $totalRequests = $employeeProfile ? LeaveRequest::where('employee_id', $employeeProfile->id)->count() : 0;
+        $pendingRequests = $employeeProfile ? LeaveRequest::where('employee_id', $employeeProfile->id)->where('status', 'Pending')->count() : 0;
+        
+        $attendanceToday = $employeeProfile ? Attendance::where('employee_id', $employeeProfile->id)->where('attendance_date', $todayDate)->first() : null;
         $todayStatus = $attendanceToday ? str($attendanceToday->status)->title() : 'Not Clocked In';
 
-        $daysPresentCount = Attendance::where('employee_id', $user->employee->id)
+        $daysPresentCount = $employeeProfile ? Attendance::where('employee_id', $employeeProfile->id)
             ->whereIn('status', ['present', 'late'])
             ->whereMonth('attendance_date', Carbon::now()->month)
             ->whereYear('attendance_date', Carbon::now()->year)
-            ->count();
+            ->count() : 0;
 
         $vacationBalance = 15; 
 
