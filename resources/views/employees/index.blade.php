@@ -87,12 +87,12 @@
                                 <td class="px-6 py-4 whitespace-nowrap">
                                     @if($employee->employment_status === \App\Models\Employee::STATUS_FULL_TIME)
                                         <span
-                                            class="px-3 py-1 inline-flex text-xs font-bold rounded-full bg-emerald-100 text-emerald-700 border border-emerald-100">
+                                            class="px-3 py-1 inline-flex text-xs font-bold rounded-full bg-green-300 text-green-900">
                                             {{ $employee->employment_status }}
                                         </span>
                                     @else
                                         <span
-                                            class="px-3 py-1 inline-flex text-xs font-bold rounded-full bg-indigo-100 text-indigo-700 border border-indigo-100">
+                                            class="px-3 py-1 inline-flex text-xs font-bold rounded-full bg-blue-300 text-blue-900">
                                             {{ $employee->employment_status }}
                                         </span>
                                     @endif

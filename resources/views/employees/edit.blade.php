@@ -127,7 +127,7 @@
                     </a>
                     <button type="submit"
                         class="w-full sm:w-auto px-5 py-2.5 text-base font-semibold text-white bg-[#2982d6] hover:bg-[#2168ab] rounded-xl shadow-xs transition-colors cursor-pointer">
-                        Save
+                        Update Record
                     </button>
                 </div>
             </form>

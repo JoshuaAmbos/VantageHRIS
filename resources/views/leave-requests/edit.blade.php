@@ -3,24 +3,48 @@
         {{ __('Edit Leave Request') }}
     </x-slot>
 
-    <div class="max-w-4xl mx-auto bg-white shadow-sm sm:rounded-xl border border-gray-100 overflow-hidden mt-6">
-        <div class="px-8 py-6 border-b border-gray-100 bg-gray-50/50">
-            <h3 class="text-lg font-bold text-vantage-900">Modify Leave Request</h3>
-            <p class="text-sm text-slate-500">Update the parameters of your existing leave request below.</p>
+    {{-- Unified Form Frame Panel --}}
+    <div class="max-w-4xl mx-auto bg-white shadow-sm rounded-xl border border-[#e2e8f0] overflow-hidden mt-6 mx-2 sm:mx-auto">
+        <div class="px-6 py-5 sm:px-8 sm:py-6 border-b border-[#e2e8f0] bg-[#f8fafc]">
+            <h3 class="text-xl font-bold text-[#081a2b] tracking-tight">Modify Leave Request</h3>
+            <p class="text-sm sm:text-base text-[#2168ab] mt-1">Update the parameters of your existing leave request below.</p>
         </div>
 
-        <div class="p-8">
+        {{-- Error Notification --}}
+        @if ($errors->any())
+            <div class="bg-rose-50 border-l-4 border-rose-500 p-4 m-4 sm:m-6 mb-0 rounded-r-xl">
+                <div class="flex">
+                    <div class="flex-shrink-0">
+                        <svg class="h-5 w-5 text-rose-500" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd"
+                                d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
+                                clip-rule="evenodd" />
+                        </svg>
+                    </div>
+                    <div class="ml-3">
+                        <h3 class="text-sm font-bold text-rose-800">Please correct the following errors:</h3>
+                        <ul class="mt-2 text-sm text-rose-700 list-disc list-inside font-medium">
+                            @foreach ($errors->all() as $error)
+                                <li>{{ $error }}</li>
+                            @endforeach
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        @endif
+
+        <div class="p-4 sm:p-8">
             <form action="{{ route('leave-requests.update', $request->id) }}" method="POST" class="space-y-6">
                 @csrf
                 @method('PUT')
 
-                <div class="grid grid-cols-1 gap-6">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-5 sm:gap-6">
 
                     {{-- Leave Type --}}
-                    <div>
-                        <label for="leave_type" class="block text-sm font-semibold text-vantage-900 mb-1">Type of Leave <span style="color: red">*</span></label>
+                    <div class="md:col-span-2">
+                        <label for="leave_type" class="block text-base font-bold text-[#081a2b] mb-1.5">Type of Leave <span class="text-rose-500">*</span></label>
                         <select name="leave_type" id="leave_type"
-                            class="w-full rounded-lg border-gray-300 shadow-sm focus:border-vantage-500 focus:ring focus:ring-vantage-500/20 transition-colors">
+                            class="w-full px-4 py-2.5 bg-white border border-[#e2e8f0] text-base text-[#081a2b] rounded-xl focus:outline-none focus:border-[#2982d6] focus:ring-1 focus:ring-[#2982d6] transition-all shadow-xs appearance-none">
                             
                             <option value="{{ App\Models\LeaveRequest::LEAVE_TYPE_PERSONAL }}" 
                                 {{ old('leave_type', $request->leave_type) == App\Models\LeaveRequest::LEAVE_TYPE_PERSONAL ? 'selected' : '' }}>
@@ -33,48 +57,53 @@
                                 </option>
                             @endforeach
                         </select>
-                        @error('leave_type') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
+                        @error('leave_type') 
+                            <p class="text-rose-600 text-sm mt-1.5 font-medium">{{ $message }}</p> 
+                        @enderror
+                    </div>
+
+                    {{-- Start Date --}}
+                    <div>
+                        <label for="start_date" class="block text-base font-bold text-[#081a2b] mb-1.5">Start Date <span class="text-rose-500">*</span></label>
+                        <input type="date" name="start_date" id="start_date" 
+                            value="{{ old('start_date', \Carbon\Carbon::parse($request->start_date)->format('Y-m-d')) }}"
+                            class="w-full px-4 py-2.5 bg-white border border-[#e2e8f0] text-base text-[#081a2b] rounded-xl focus:outline-none focus:border-[#2982d6] focus:ring-1 focus:ring-[#2982d6] transition-all shadow-xs">
+                        @error('start_date') 
+                            <p class="text-rose-600 text-sm mt-1.5 font-medium">{{ $message }}</p> 
+                        @enderror
+                    </div>
+
+                    {{-- End Date --}}
+                    <div>
+                        <label for="end_date" class="block text-base font-bold text-[#081a2b] mb-1.5">End Date <span class="text-rose-500">*</span></label>
+                        <input type="date" name="end_date" id="end_date" 
+                            value="{{ old('end_date', \Carbon\Carbon::parse($request->end_date)->format('Y-m-d')) }}"
+                            class="w-full px-4 py-2.5 bg-white border border-[#e2e8f0] text-base text-[#081a2b] rounded-xl focus:outline-none focus:border-[#2982d6] focus:ring-1 focus:ring-[#2982d6] transition-all shadow-xs">
+                        @error('end_date') 
+                            <p class="text-rose-600 text-sm mt-1.5 font-medium">{{ $message }}</p> 
+                        @enderror
                     </div>
 
                     {{-- Reason --}}
-                    <div>
-                        <label for="reason" class="block text-sm font-semibold text-vantage-900 mb-1">Reason <span style="color: red">*</span></label>
-                        <textarea name="reason" id="reason" rows="3"
-                            class="w-full rounded-lg border-gray-300 shadow-sm focus:border-vantage-500 focus:ring focus:ring-vantage-500/20 transition-colors">{{ old('reason', $request->reason) }}</textarea>
-                        @error('reason') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
-                    </div>
-
-                    {{-- Dates --}}
-                    <div class="grid grid-cols-2 gap-6">
-
-                        {{-- Start Date --}}
-                        <div>
-                            <label for="start_date" class="block text-sm font-semibold text-vantage-900 mb-1">Start Date <span style="color: red">*</span></label>
-                            <input type="date" name="start_date" id="start_date" 
-                                value="{{ old('start_date', \Carbon\Carbon::parse($request->start_date)->format('Y-m-d')) }}"
-                                class="w-full rounded-lg border-gray-300 shadow-sm focus:border-vantage-500 focus:ring focus:ring-vantage-500/20 transition-colors">
-                            @error('start_date') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
-                        </div>
-
-                        {{-- End Date --}}
-                        <div>
-                            <label for="end_date" class="block text-sm font-semibold text-vantage-900 mb-1">End Date <span style="color: red">*</span></label>
-                            <input type="date" name="end_date" id="end_date" 
-                                value="{{ old('end_date', \Carbon\Carbon::parse($request->end_date)->format('Y-m-d')) }}"
-                                class="w-full rounded-lg border-gray-300 shadow-sm focus:border-vantage-500 focus:ring focus:ring-vantage-500/20 transition-colors">
-                            @error('end_date') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
-                        </div>
+                    <div class="md:col-span-2">
+                        <label for="reason" class="block text-base font-bold text-[#081a2b] mb-1.5">Reason <span class="text-rose-500">*</span></label>
+                        <textarea name="reason" id="reason" rows="4"
+                            class="w-full px-4 py-2.5 bg-white border border-[#e2e8f0] text-base text-[#081a2b] rounded-xl focus:outline-none focus:border-[#2982d6] focus:ring-1 focus:ring-[#2982d6] placeholder-[#a9cdef] transition-all shadow-xs resize-none">{{ old('reason', $request->reason) }}</textarea>
+                        @error('reason') 
+                            <p class="text-rose-600 text-sm mt-1.5 font-medium">{{ $message }}</p> 
+                        @enderror
                     </div>
 
                 </div>
 
-                <div class="mt-8 pt-6 border-t border-gray-100 flex items-center justify-end gap-3">
+                {{-- Footer Operations Buttons --}}
+                <div class="mt-8 pt-6 border-t border-[#e2e8f0] flex flex-col-reverse sm:flex-row items-center justify-end gap-3">
                     <a href="{{ route('leave-requests.index') }}"
-                        class="px-5 py-2.5 text-sm font-medium text-slate-600 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">
+                        class="w-full sm:w-auto text-center px-5 py-2.5 text-base font-semibold text-[#2168ab] bg-[#f8fafc] border border-[#e2e8f0] rounded-xl hover:bg-[#eaf3fb] hover:text-[#103456] transition-colors shadow-xs">
                         Cancel
                     </a>
                     <button type="submit"
-                        class="px-5 py-2.5 text-sm font-bold text-white bg-vantage-800 rounded-lg hover:bg-vantage-900 focus:ring-4 focus:ring-vantage-500/30 transition-colors shadow-sm">
+                        class="w-full sm:w-auto px-5 py-2.5 text-base font-semibold text-white bg-[#2982d6] hover:bg-[#2168ab] rounded-xl shadow-xs transition-colors cursor-pointer">
                         Update Leave Request
                     </button>
                 </div>

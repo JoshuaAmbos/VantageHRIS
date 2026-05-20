@@ -70,12 +70,12 @@
                                 <td class="px-6 py-4 whitespace-nowrap">
                                     @if($department->status === \App\Models\Department::STATUS_ACTIVE)
                                         <span
-                                            class="px-3 py-1 inline-flex text-xs font-bold rounded-full bg-emerald-100 text-emerald-700 border border-emerald-100">
+                                            class="px-3 py-1 inline-flex text-xs font-bold rounded-full bg-green-300 text-green-900">
                                             {{ str($department->status)->ucfirst() }}
                                         </span>
                                     @else
                                         <span
-                                            class="px-3 py-1 inline-flex text-xs font-bold rounded-full bg-red-200 text-red-700 border border-red-100">
+                                            class="px-3 py-1 inline-flex text-xs font-bold rounded-full bg-red-300 text-red-900">
                                             {{ str($department->status)->ucfirst() }}
                                         </span>
                                     @endif
