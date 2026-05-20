@@ -1,6 +1,6 @@
 FROM php:8.3-fpm-alpine
 
-# Install system dependencies, PHP extensions, and BASH
+# Install system dependencies, core development libraries, and BASH
 RUN apk add --no-cache \
     nginx \
     supervisor \
@@ -14,7 +14,9 @@ RUN apk add --no-cache \
     oniguruma-dev \
     bash
 
-RUN docker-php-ext-install pdo pdo_mysql pdo_pgsql mbstring exif pcntl bcmath gd
+# FIXED: Explicitly install BOTH pgsql and pdo_pgsql drivers for Render PostgreSQL
+RUN docker-php-ext-configure pgsql -with-pgsql=/usr/local/pgsql \
+    && docker-php-ext-install pdo pdo_mysql pdo_pgsql pgsql mbstring exif pcntl bcmath gd
 
 # Get modern Composer inside the container
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
@@ -32,8 +34,8 @@ COPY nginx.conf /etc/nginx/http.d/default.conf
 RUN chown -R www-data:www-data /var/www
 RUN sed -i 's/user nginx;/user www-data;/g' /etc/nginx/nginx.conf
 
-# FORCE PHP-FPM to listen on 127.0.0.1:9000 (overriding default Alpine Unix sockets)
-RUN sed -i 's|listen = /.*|listen = 127.0.0.1:9000|g' /usr/local/etc/php-fpm.d/www.conf
+# Force PHP-FPM to listen globally on port 9000
+RUN sed -i 's|listen = /.*|listen = 0.0.0.0:9000|g' /usr/local/etc/php-fpm.d/www.conf
 
 # Run the build script securely using bash
 RUN chmod +x /var/www/build.sh && bash /var/www/build.sh
