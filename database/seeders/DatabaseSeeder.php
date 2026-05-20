@@ -18,10 +18,6 @@ class DatabaseSeeder extends Seeder
     {
         // Users & Logins
         $usersData = [
-            // Default ADMIN account
-            ['name' => 'System Admin', 'email' => 'admin@vantage.com', 'role' => 'admin', 'pass' => 'password'],
-            
-            // Dummy
             ['name' => 'Alice Vance', 'email' => 'vance@vantage.com', 'role' => 'admin', 'pass' => 'password'],
             ['name' => 'Robert Miller', 'email' => 'miller@vantage.com', 'role' => 'manager', 'pass' => 'password'],
             ['name' => 'Elena Rostova', 'email' => 'rostova@vantage.com', 'role' => 'hr', 'pass' => 'password'],
@@ -65,8 +61,6 @@ class DatabaseSeeder extends Seeder
 
         // Employees
         $employeeSpecs = [
-            ['email' => 'admin@vantage.com', 'first' => 'System', 'last' => 'Admin', 'pos' => 'Administrator', 'status' => 'Full-time', 'dept' => 'IT', 'phone' => '09000000000'],
-            
             ['email' => 'vance@vantage.com', 'first' => 'Alice', 'last' => 'Vance', 'pos' => 'Administrator', 'status' => 'Full-time', 'dept' => 'IT', 'phone' => '09112223333'],
             ['email' => 'miller@vantage.com', 'first' => 'Robert', 'last' => 'Miller', 'pos' => 'Manager', 'status' => 'Full-time', 'dept' => 'IT', 'phone' => '09123456789'],
             ['email' => 'kim@vantage.com', 'first' => 'David', 'last' => 'Kim', 'pos' => 'Software Engineer', 'status' => 'Full-time', 'dept' => 'IT', 'phone' => '09756624584'],
@@ -101,12 +95,12 @@ class DatabaseSeeder extends Seeder
             ]);
         }
 
-        // Updated positional array indicators due to the new account sequence addition
-        $deptMap['IT']->update(['manager_id' => $employees[2]->id]); // Robert Miller
-        $deptMap['Marketing']->update(['manager_id' => $employees[5]->id]); // Marcus Brody
-        $deptMap['Finance']->update(['manager_id' => $employees[7]->id]); // Michael Chang
+        // Restored original positional mapping pointers
+        $deptMap['IT']->update(['manager_id' => $employees[1]->id]); // Robert Miller
+        $deptMap['Marketing']->update(['manager_id' => $employees[4]->id]); // Marcus Brody
+        $deptMap['Finance']->update(['manager_id' => $employees[6]->id]); // Michael Chang
 
-        $managers = [$employees[2], $employees[5], $employees[7]];
+        $managers = [$employees[1], $employees[4], $employees[6]];
 
         // Attendance History (30 Business Days)
         $businessDays = [];
@@ -166,8 +160,8 @@ class DatabaseSeeder extends Seeder
         $leaveTypes = ['Vacation', 'Sick', 'Personal', 'Unpaid'];
 
         foreach ($employees as $index => $emp) {
-            // Bypass manager profile updates to match original loop metrics
-            if (in_array($emp->id, [3, 6, 8])) continue; 
+            // Restored original offset mapping skips
+            if (in_array($emp->id, [2, 5, 7])) continue; 
 
             LeaveRequest::create([
                 'employee_id' => $emp->id,
