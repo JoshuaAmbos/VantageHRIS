@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\DepartmentRequest;
 use App\Models\Department;
 use App\Models\Employee;
+use App\Models\User;
 use Illuminate\Http\Request;
 
 class DepartmentController extends Controller
@@ -12,18 +13,19 @@ class DepartmentController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
+        $search = $request->input('search');
         $user = auth()->user();
 
-        if ($user->role === 'manager') {
+        if ($user->role === User::ROLE_MANAGER) {
             $managerDeptId = $user->employee->department_id ?? null;
             $departments = Department::where('id', $managerDeptId)->get();
         } else {
-            $departments = Department::all();
+            $departments = Department::search($search)->latest()->paginate(10);
         }
 
-        return view('departments.index', compact('departments'));
+        return view('departments.index', compact('departments', 'search'));
     }
 
     /**

@@ -31,4 +31,17 @@ class Department extends Model
     public function manager(): BelongsTo {
         return $this->belongsTo(Employee::class, 'manager_id', 'id');
     }
+
+    /**
+     * Query search for this model.
+     */
+    public function scopeSearch($query, $term)
+    {
+        if (! $term) return $query;
+
+        return $query->where(function ($q) use ($term) {
+            $q->where('name', 'LIKE', "%{$term}%")
+            ->orWhere('description', 'LIKE', "%{$term}%");
+        });
+    }
 }

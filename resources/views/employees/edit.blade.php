@@ -3,8 +3,10 @@
         {{ __('Edit Employee') }}: {{ $employee->first_name }} {{ $employee->last_name }}
     </x-slot>
 
-    <div class="max-w-4xl mx-auto bg-white shadow-sm rounded-xl border border-[#e2e8f0] overflow-hidden mt-6 mx-2 sm:mx-auto">
+    <div
+        class="max-w-4xl mx-auto bg-white shadow-sm rounded-xl border border-[#e2e8f0] overflow-hidden mt-6 mx-2 sm:mx-auto">
 
+        {{-- Error notif --}}
         @if ($errors->any())
             <div class="bg-rose-50 border-l-4 border-rose-500 p-4 m-4 sm:m-6 mb-0 rounded-r-xl">
                 <div class="flex">
@@ -35,14 +37,17 @@
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-5 sm:gap-6">
                     {{-- Names --}}
                     <div>
-                        <label for="first_name" class="block text-base font-bold text-[#081a2b] mb-1.5">First Name</label>
-                        <input type="text" name="first_name" id="first_name" value="{{ old('first_name', $employee->first_name) }}"
+                        <label for="first_name" class="block text-base font-bold text-[#081a2b] mb-1.5">First
+                            Name</label>
+                        <input type="text" name="first_name" id="first_name"
+                            value="{{ old('first_name', $employee->first_name) }}"
                             class="w-full px-4 py-2.5 bg-white border border-[#e2e8f0] text-base text-[#081a2b] rounded-xl focus:outline-none focus:border-[#2982d6] focus:ring-1 focus:ring-[#2982d6] placeholder-[#a9cdef] transition-all shadow-xs">
                     </div>
 
                     <div>
                         <label for="last_name" class="block text-base font-bold text-[#081a2b] mb-1.5">Last Name</label>
-                        <input type="text" name="last_name" id="last_name" value="{{ old('last_name', $employee->last_name) }}"
+                        <input type="text" name="last_name" id="last_name"
+                            value="{{ old('last_name', $employee->last_name) }}"
                             class="w-full px-4 py-2.5 bg-white border border-[#e2e8f0] text-base text-[#081a2b] rounded-xl focus:outline-none focus:border-[#2982d6] focus:ring-1 focus:ring-[#2982d6] placeholder-[#a9cdef] transition-all shadow-xs">
                     </div>
 
@@ -60,7 +65,8 @@
                     </div>
 
                     <div class="md:col-span-2">
-                        <label for="address" class="block text-base font-bold text-[#081a2b] mb-1.5">Residential Address</label>
+                        <label for="address" class="block text-base font-bold text-[#081a2b] mb-1.5">Residential
+                            Address</label>
                         <textarea name="address" id="address" rows="3"
                             class="w-full px-4 py-2.5 bg-white border border-[#e2e8f0] text-base text-[#081a2b] rounded-xl focus:outline-none focus:border-[#2982d6] focus:ring-1 focus:ring-[#2982d6] placeholder-[#a9cdef] transition-all shadow-xs resize-none">{{ old('address', $employee->address) }}</textarea>
                     </div>
@@ -69,7 +75,8 @@
                     <div class="md:col-span-2 pt-4 border-t border-[#e2e8f0]"></div>
 
                     <div>
-                        <label for="department_id" class="block text-base font-bold text-[#081a2b] mb-1.5">Department</label>
+                        <label for="department_id"
+                            class="block text-base font-bold text-[#081a2b] mb-1.5">Department</label>
                         <select name="department_id" id="department_id"
                             class="w-full px-4 py-2.5 bg-white border border-[#e2e8f0] text-base text-[#081a2b] rounded-xl focus:outline-none focus:border-[#2982d6] focus:ring-1 focus:ring-[#2982d6] transition-all shadow-xs appearance-none">
                             <option value="">None</option>
@@ -95,12 +102,14 @@
 
                     <div>
                         <label for="hire_date" class="block text-base font-bold text-[#081a2b] mb-1.5">Hire Date</label>
-                        <input type="date" name="hire_date" id="hire_date" value="{{ old('hire_date', $employee->hire_date) }}"
+                        <input type="date" name="hire_date" id="hire_date"
+                            value="{{ old('hire_date', $employee->hire_date) }}"
                             class="w-full px-4 py-2.5 bg-white border border-[#e2e8f0] text-base text-[#081a2b] rounded-xl focus:outline-none focus:border-[#2982d6] focus:ring-1 focus:ring-[#2982d6] transition-all shadow-xs">
                     </div>
 
                     <div>
-                        <label for="employment_status" class="block text-base font-bold text-[#081a2b] mb-1.5">Status</label>
+                        <label for="employment_status"
+                            class="block text-base font-bold text-[#081a2b] mb-1.5">Status</label>
                         <select name="employment_status" id="employment_status"
                             class="w-full px-4 py-2.5 bg-white border border-[#e2e8f0] text-base text-[#081a2b] rounded-xl focus:outline-none focus:border-[#2982d6] focus:ring-1 focus:ring-[#2982d6] transition-all shadow-xs appearance-none">
                             @foreach([\App\Models\Employee::STATUS_FULL_TIME, \App\Models\Employee::STATUS_PART_TIME] as $status)
@@ -110,14 +119,15 @@
                     </div>
                 </div>
 
-                <div class="mt-8 pt-6 border-t border-[#e2e8f0] flex flex-col-reverse sm:flex-row items-center justify-end gap-3">
+                <div
+                    class="mt-8 pt-6 border-t border-[#e2e8f0] flex flex-col-reverse sm:flex-row items-center justify-end gap-3">
                     <a href="{{ route('employees.index') }}"
                         class="w-full sm:w-auto text-center px-5 py-2.5 text-base font-semibold text-[#2168ab] bg-[#f8fafc] border border-[#e2e8f0] rounded-xl hover:bg-[#eaf3fb] hover:text-[#103456] transition-colors shadow-xs">
                         Cancel
                     </a>
                     <button type="submit"
                         class="w-full sm:w-auto px-5 py-2.5 text-base font-semibold text-white bg-[#2982d6] hover:bg-[#2168ab] rounded-xl shadow-xs transition-colors cursor-pointer">
-                        Update Employee Record
+                        Save
                     </button>
                 </div>
             </form>
