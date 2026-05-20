@@ -173,9 +173,6 @@ Route::middleware('auth')->group(function () {
 
 // Personal Portal
 Route::middleware(['auth'])->group(function () {
-    
-    Route::resource('attendances', AttendanceController::class);
-    
     Route::get('/my-portal', [DashboardController::class, 'myPortal'])->name('dashboard.my-portal');
 });
 
