@@ -14,8 +14,9 @@ return [
     | specified when running a cache operation inside the application.
     |
     */
-
-    'default' => env('CACHE_STORE', 'database'),
+    
+    // FIXED: Looks for CACHE_STORE first, then CACHE_DRIVER, then falls back safely to 'file'
+    'default' => env('CACHE_STORE', env('CACHE_DRIVER', 'file')),
 
     /*
     |--------------------------------------------------------------------------
