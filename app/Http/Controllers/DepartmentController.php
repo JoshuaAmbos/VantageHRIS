@@ -20,9 +20,9 @@ class DepartmentController extends Controller
 
         if ($user->role === User::ROLE_MANAGER) {
             $managerDeptId = $user->employee->department_id ?? null;
-            $departments = Department::where('id', $managerDeptId)->get();
+            $departments = Department::search($search)->where('id', $managerDeptId)->paginate(7)->withQueryString();
         } else {
-            $departments = Department::search($search)->latest()->paginate(10);
+            $departments = Department::search($search)->latest()->paginate(7)->withQueryString();
         }
 
         return view('departments.index', compact('departments', 'search'));

@@ -171,6 +171,12 @@
                         @endforelse
                     </tbody>
                 </table>
+
+                @if(method_exists($attendances, 'links') && $attendances->hasPages())
+                    <div class="px-6 py-4 border-t border-[#e2e8f0] bg-[#f8fafc] mt-auto">
+                        {{ $attendances->links() }}
+                    </div>
+                @endif
             </div>
         </div>
 

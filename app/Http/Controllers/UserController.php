@@ -21,7 +21,7 @@ class UserController extends Controller
     public function index(Request $request)
     {
         $search = $request->input('search');
-        $users = User::search($search)->latest()->paginate(10);
+        $users = User::search($search)->latest()->paginate(8)->withQueryString();
 
         return view('users.index', compact('users', 'search'));
     }

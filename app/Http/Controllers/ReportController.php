@@ -39,9 +39,7 @@ class ReportController extends Controller
             Attendance::STATUS_ABSENT   => 0,
         ];
 
-        $attendances = Attendance::with('employee')
-            ->whereDate('attendance_date', $date)
-            ->get();
+        $attendances = Attendance::with('employee')->whereDate('attendance_date', $date)->paginate(6);
 
         foreach ($attendances as $attendance) {
             $statusKey = strtolower(trim($attendance->status));

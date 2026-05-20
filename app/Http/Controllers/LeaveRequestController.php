@@ -19,15 +19,15 @@ class LeaveRequestController extends Controller
         $user = auth()->user();
 
         if ($user->role === 'employee') {
-            $leaveRequests = LeaveRequest::where('employee_id', $user->employee->id)->get();
+            $leaveRequests = LeaveRequest::search($search)->where('employee_id', $user->employee->id)->paginate(7)->withQueryString();
         } elseif ($user->role === 'manager') {
             $managerDeptId = $user->employee->department_id;
-            $leaveRequests = LeaveRequest::whereHas('submittedBy', function ($query) use ($managerDeptId) {
+            $leaveRequests = LeaveRequest::search($search)->whereHas('submittedBy', function ($query) use ($managerDeptId) {
                 $query->where('department_id', $managerDeptId);
-            })->with('submittedBy')->get();
+            })->with('submittedBy')->paginate(7)->withQueryString();
         } else {
 
-            $leaveRequests = LeaveRequest::search($search)->with('submittedBy')->get();
+            $leaveRequests = LeaveRequest::search($search)->with('submittedBy')->paginate(7)->withQueryString();
         }
 
         return view('leave-requests.index', compact('leaveRequests', 'search'));

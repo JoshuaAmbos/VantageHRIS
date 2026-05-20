@@ -18,16 +18,16 @@ class AttendanceController extends Controller
         $user = auth()->user();
 
         if ($user->role === 'employee') {
-            $attendances = Attendance::where('employee_id', $user->employee->id)->get();
+            $attendances = Attendance::search($search)->where('employee_id', $user->employee->id)->paginate(8)->withQueryString();
         } elseif ($user->role === 'manager') {
             $managerDeptId = $user->employee->department_id;
-            $attendances = Attendance::whereHas('employee', function ($query) use ($managerDeptId) {
+            $attendances = Attendance::search($search)->whereHas('employee', function ($query) use ($managerDeptId) {
                 $query->where('department_id', $managerDeptId);
-            })->with('employee')->get();
+            })->with('employee')->paginate(8)->withQueryString();
         } else {
 
             // Admin & HR see global attendance 
-            $attendances = Attendance::search($search)->with('employee.department')->get();
+            $attendances = Attendance::search($search)->with('employee.department')->latest()->paginate(8)->withQueryString();
         }
 
         return view('attendances.index', compact('attendances', 'search'));
