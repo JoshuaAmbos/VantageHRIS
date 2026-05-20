@@ -1,6 +1,6 @@
 FROM php:8.3-fpm-alpine
 
-# Install system dependencies and PHP extensions needed for Laravel
+# Install system dependencies, PHP extensions, and BASH needed for Laravel
 RUN apk add --no-cache \
     nginx \
     supervisor \
@@ -11,7 +11,8 @@ RUN apk add --no-cache \
     unzip \
     git \
     postgresql-dev \
-    oniguruma-dev
+    oniguruma-dev \
+    bash
 
 RUN docker-php-ext-install pdo pdo_mysql pdo_pgsql mbstring exif pcntl bcmath gd
 
@@ -27,14 +28,11 @@ COPY . .
 # Set permissions for Laravel storage engines
 RUN chown -R www-data:www-data /var/www/storage /var/www/bootstrap/cache
 
-# Copy Nginx server configuration from Render runtime template
-RUN cp /var/www/vendor/bin/heroku-php-nginx /usr/local/bin/ || true
-
-# Run the build script
-RUN chmod +x /var/www/build.sh && /var/www/build.sh
+# Run the build script securely using bash
+RUN chmod +x /var/www/build.sh && bash /var/www/build.sh
 
 # Expose Render default port allocation parameter
 EXPOSE 10000
 
-# Start Nginx & PHP-FPM service matrix routing through public/ directory
-CMD ["sh", "-c", "php-fpm -D && nginx -g 'daemon off;' -c /var/www/vendor/laravel/framework/src/Illuminate/Foundation/resources/server.php"]
+# Start modern Nginx & PHP-FPM routing explicitly for Alpine
+CMD ["sh", "-c", "php-fpm -D && nginx -g 'daemon off;'"]
