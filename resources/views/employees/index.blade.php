@@ -88,22 +88,26 @@
                                         </span>
                                     @endif
                                 </td>
-
                                 <td class="px-6 py-4 whitespace-nowrap text-right text-base font-semibold">
                                     <div class="flex items-center justify-end gap-2">
                                         <a href="{{ route('employees.show', $employee->id) }}"
                                             class="text-[#2982d6] hover:text-[#103456] bg-[#eaf3fb] hover:bg-[#d4e6f7] px-3 py-1.5 rounded-lg transition-colors text-sm font-bold shadow-xs">View</a>
                                         <a href="{{ route('employees.edit', $employee->id) }}"
                                             class="text-[#103456] hover:text-[#081a2b] bg-[#f8fafc] hover:bg-[#e2e8f0] px-3 py-1.5 rounded-lg transition-colors border border-[#e2e8f0] text-sm font-bold shadow-xs">Edit</a>
-                                        <form action="{{ route('employees.destroy', $employee->id) }}" method="POST"
-                                            class="inline" onsubmit="return confirm('Delete this employee?');">
-                                            @csrf
-                                            @method('DELETE')
-                                            <button type="submit"
-                                                class="text-rose-600 hover:text-rose-800 bg-rose-50 hover:bg-rose-100 px-3 py-1.5 rounded-lg transition-colors text-sm font-bold border border-rose-100 shadow-xs cursor-pointer">Delete</button>
-                                        </form>
+
+                                        @if (Auth::user()->role == App\Models\User::ROLE_ADMIN)
+                                            <form action="{{ route('employees.destroy', $employee->id) }}" method="POST"
+                                                class="inline" onsubmit="return confirm('Delete this employee?');">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="submit"
+                                                    class="text-rose-600 hover:text-rose-800 bg-rose-50 hover:bg-rose-100 px-3 py-1.5 rounded-lg transition-colors text-sm font-bold border border-rose-100 shadow-xs cursor-pointer">Delete</button>
+                                            </form>
+                                        @endif
+
                                     </div>
                                 </td>
+
                             </tr>
                         @empty
                             <tr>

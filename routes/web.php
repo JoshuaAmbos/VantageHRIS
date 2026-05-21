@@ -128,7 +128,7 @@ Route::middleware(['auth', 'role:admin,hr,manager,employee'])->group(function(){
 });
 
 // Users Module (Admin and HR Staff only)
-Route::middleware(['auth', 'role:admin,hr'])->group(function () {
+Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::prefix('users')->name('users.')->group(function () {
         // Index
         Route::get('/', [UserController::class, 'index'])->name('index');

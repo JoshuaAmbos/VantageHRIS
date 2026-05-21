@@ -147,16 +147,19 @@
                     <span class="text-base">HR Reports</span>
                 </a>
 
-                <a href="{{ route('users.index') }}"
-                    class="flex items-center px-3 py-2.5 rounded-lg transition-all duration-150 group {{ request()->routeIs('users.*') ? 'bg-[#eaf3fb] text-[#103456] font-semibold' : 'text-[#2168ab] hover:bg-[#f8fafc] hover:text-[#184e81]' }}">
-                    <svg class="w-5 h-5 mr-3 transition-colors {{ request()->routeIs('users.*') ? 'text-[#2982d6]' : 'text-[#549bde] group-hover:text-[#2982d6]' }}"
-                        fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round"
-                            d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z">
-                        </path>
-                    </svg>
-                    <span class="text-base">Users</span>
-                </a>
+                {{-- FIXED: Wrapped in an Admin-only check so HR Staff cannot view or navigate to User controls --}}
+                @if(auth()->user()->role === 'admin')
+                    <a href="{{ route('users.index') }}"
+                        class="flex items-center px-3 py-2.5 rounded-lg transition-all duration-150 group {{ request()->routeIs('users.*') ? 'bg-[#eaf3fb] text-[#103456] font-semibold' : 'text-[#2168ab] hover:bg-[#f8fafc] hover:text-[#184e81]' }}">
+                        <svg class="w-5 h-5 mr-3 transition-colors {{ request()->routeIs('users.*') ? 'text-[#2982d6]' : 'text-[#549bde] group-hover:text-[#2982d6]' }}"
+                            fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z">
+                            </path>
+                        </svg>
+                        <span class="text-base">Users</span>
+                    </a>
+                @endif
             @endif
         </nav>
     </aside>
