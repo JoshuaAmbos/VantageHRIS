@@ -42,11 +42,11 @@ RUN sed -i 's/user nginx;/user www-data;/g' /etc/nginx/nginx.conf
 # Force PHP-FPM to listen globally on port 9000
 RUN sed -i 's|listen = /.*|listen = 0.0.0.0:9000|g' /usr/local/etc/php-fpm.d/www.conf
 
-# Run the build script securely using bash
-RUN chmod +x /var/www/build.sh && bash /var/www/build.sh
-
 # Expose the standard web port
 EXPOSE 80
 
-# Start modern Nginx & PHP-FPM together explicitly
-CMD ["sh", "-c", "php-fpm -D && nginx -g 'daemon off;'"]
+# FIXED: Mark the file as executable during build, but DO NOT run it here
+RUN chmod +x /var/www/build.sh
+
+# FIXED: Run the build script at runtime when variables are live, then launch services
+CMD ["sh", "-c", "bash /var/www/build.sh && php-fpm -D && nginx -g 'daemon off;'"]
