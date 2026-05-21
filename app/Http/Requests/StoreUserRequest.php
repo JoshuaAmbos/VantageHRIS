@@ -2,11 +2,10 @@
 
 namespace App\Http\Requests;
 
+use App\Models\User;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
-
-use App\Models\User;
 
 class StoreUserRequest extends FormRequest
 {
@@ -25,14 +24,25 @@ class StoreUserRequest extends FormRequest
      */
     public function rules(): array
     {
+        $userId = $this->route('id') ?? $this->route('user');
+
         return [
-            'employee_id' => 'required|exists:employees,id',
-            'email' => 'required|email|unique:users,email',
-            'password' => 'required|string|min:8|confirmed',
+            'employee_id' => ['required', 'exists:employees,id'],
+            'email' => [
+                'required',
+                'email',
+                Rule::unique('users', 'email')->ignore($userId),
+            ],
+            'password' => $userId ? ['nullable', 'string', 'min:8', 'confirmed'] : ['required', 'string', 'min:8', 'confirmed'],
             'role' => [
                 'required',
                 'string',
-                Rule::in(User::getEnumValues('role')),
+                Rule::in([
+                    User::ROLE_ADMIN,
+                    User::ROLE_EMPLOYEE,
+                    User::ROLE_MANAGER,
+                    User::ROLE_HR,
+                ]),
             ],
         ];
     }

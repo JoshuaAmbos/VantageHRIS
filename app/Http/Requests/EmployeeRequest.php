@@ -23,16 +23,18 @@ class EmployeeRequest extends FormRequest
     {
         $employeeId = $this->route('id') ?? $this->route('employee');
 
-        $emailRules = ['required', 'email', "unique:employees,email,{$employeeId}"];
-        $phoneRules = ['required', 'string', "unique:employees,phone,{$employeeId}"];
+        // FIXED: Using fluent Rule wrappers to securely handle null/empty variables
+        $emailRules = ['required', 'email', Rule::unique('employees', 'email')->ignore($employeeId)];
+        $phoneRules = ['required', 'string', Rule::unique('employees', 'phone')->ignore($employeeId)];
 
         if ($this->isMethod('post')) {
-            $emailRules[] = 'unique:users,email';
+            $emailRules[] = Rule::unique('users', 'email');
         } else {
             $employee = Employee::find($employeeId);
             $userId = $employee?->user_id;
             if ($userId) {
-                $emailRules[] = "unique:users,email,{$userId}";
+                // FIXED: Using fluent Rule validation wrapper here as well
+                $emailRules[] = Rule::unique('users', 'email')->ignore($userId);
             }
         }
 
@@ -41,7 +43,7 @@ class EmployeeRequest extends FormRequest
             'last_name' => ['required', 'string', 'max:255'],
             'email' => $emailRules,
             'phone' => $phoneRules,
-            'department_id' => ['required', 'exists:departments,id'], // Every employee must belong to a department
+            'department_id' => ['required', 'exists:departments,id'], 
             'address' => ['required', 'string'],
             'position' => ['required', Rule::in(Employee::POSITIONS)],
             'employment_status' => ['required', Rule::in(Employee::EMPLOYMENT_STATUSES)],

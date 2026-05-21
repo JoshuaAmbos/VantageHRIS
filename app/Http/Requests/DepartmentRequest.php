@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule; // FIXED: Imported the fluent Rule engine
 
 class DepartmentRequest extends FormRequest
 {
@@ -22,7 +23,12 @@ class DepartmentRequest extends FormRequest
         $departmentId = $this->route('id') ?? $this->route('department');
 
         return [
-            'name' => ['required', 'string', 'max:255', "unique:departments,name,{$departmentId}"],
+            'name' => [
+                'required', 
+                'string', 
+                'max:255', 
+                Rule::unique('departments', 'name')->ignore($departmentId)
+            ],
             'description' => ['required', 'string', 'max:255'],
             'status' => ['required', 'in:active,inactive'],
             'manager_id' => ['nullable', 'exists:employees,id'],
