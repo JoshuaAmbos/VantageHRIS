@@ -25,8 +25,10 @@ class AttendanceRequest extends FormRequest
         return [
             'employee_id' => ['required', 'exists:employees,id'],
             'attendance_date' => ['required', 'date', 'date_format:Y-m-d'],
-            'time_in' => ['required', 'date_format:H:i:s|date_format:H:i'],
-            'time_out' => ['required', 'date_format:H:i:s|date_format:H:i', 'after:time_in'],
+            
+            'time_in' => ['required', 'regex:/^(?:[01]\d|2[0-3]):[0-5]\d(?::[0-5]\d)?$/'],
+            'time_out' => ['required', 'regex:/^(?:[01]\d|2[0-3]):[0-5]\d(?::[0-5]\d)?$/', 'after:time_in'],
+            
             'status' => ['required', Rule::in($validStatuses)],
             'remarks' => ['nullable', 'string', 'max:255'],
         ];
