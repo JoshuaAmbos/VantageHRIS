@@ -7,7 +7,6 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Eloquent\Builder;
 
 class User extends Authenticatable
@@ -38,32 +37,22 @@ class User extends Authenticatable
 
     /**
      * Get the enum values of a specific column.
+     * Fixed to use native PHP lookups instead of MySQL proprietary syntax.
      * @param string $column
      * @return string[]
      */
     public static function getEnumValues(string $column): array
     {
-        $table = (new static)->getTable();
-        $result = DB::select("SHOW COLUMNS FROM {$table} WHERE Field = '{$column}'");
-
-        if (empty($result)) {
-            return [];
+        if ($column === 'role') {
+            return [
+                self::ROLE_ADMIN,
+                self::ROLE_EMPLOYEE,
+                self::ROLE_MANAGER,
+                self::ROLE_HR,
+            ];
         }
 
-        $type = $result[0]->Type;
-
-        preg_match('/^enum\((.*)\)$/', $type, $matches);
-        
-        if (!isset($matches[1])) {
-            return [];
-        }
-
-        $values = [];
-        foreach (explode(',', $matches[1]) as $value) {
-            $values[] = trim($value, "'");
-        }
-
-        return $values;
+        return [];
     }
 
     /**

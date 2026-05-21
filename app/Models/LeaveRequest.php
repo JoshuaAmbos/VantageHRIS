@@ -4,12 +4,10 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Eloquent\Builder;
 
 class LeaveRequest extends Model
 {
-
     // Common Leave Types
     public const LEAVE_TYPE_VACATION = 'Vacation';
     public const LEAVE_TYPE_SICK = 'Sick';
@@ -52,37 +50,21 @@ class LeaveRequest extends Model
 
     /**
      * Get the enum values of a specific column.
+     * Fixed to use native PHP lookups instead of MySQL proprietary syntax.
      * @param string $column
      * @return string[]
      */
     public static function getEnumValues(string $column): array
     {
-        // Fetch the target table string name (attendances)
-        $table = (new static)->getTable();
-
-        // Pass the string query directly to DB::select() without DB::raw()
-        $result = DB::select("SHOW COLUMNS FROM {$table} WHERE Field = '{$column}'");
-
-        // Safety check: if column doesn't exist, return an empty array to prevent null pointer crashes
-        if (empty($result)) {
-            return [];
+        if ($column === 'leave_type') {
+            return self::LEAVE_TYPES;
         }
 
-        $type = $result[0]->Type;
-
-        // Parse the string structure: enum('present','absent','leave')
-        preg_match('/^enum\((.*)\)$/', $type, $matches);
-        
-        if (!isset($matches[1])) {
-            return [];
+        if ($column === 'status') {
+            return self::STATUSES;
         }
 
-        $values = [];
-        foreach (explode(',', $matches[1]) as $value) {
-            $values[] = trim($value, "'");
-        }
-
-        return $values;
+        return [];
     }
 
     /**
