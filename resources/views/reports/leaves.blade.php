@@ -8,10 +8,6 @@
         {{-- Header Controls Area --}}
         <div class="mb-4">
             <h3 class="text-xl font-bold text-[#081a2b] tracking-tight">Leave Utilization Tracking</h3>
-            <a href="{{ route('reports.index') }}"
-                class="text-sm font-semibold text-[#2168ab] hover:text-[#103456] inline-flex items-center mt-1">
-                ← Back to Report Center
-            </a>
         </div>
 
         {{-- Verification State Ribbon Breakdown Grid --}}

@@ -6,35 +6,21 @@
     <div class="mt-6 px-2 sm:px-0 space-y-6">
         <h3 class="text-xl font-bold text-[#081a2b] tracking-tight">System Report Dashboard</h3>
 
-        {{-- High Level Summary Ribbon Grid --}}
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-5">
 
-            {{-- Metrics Tile 1 --}}
+            {{-- Total Active Staff --}}
             <div class="bg-white p-6 rounded-xl border border-[#e2e8f0] shadow-sm">
                 <p class="text-xs font-bold text-[#2168ab] uppercase tracking-widest">Total Active Staff</p>
                 <h3 class="text-3xl font-extrabold text-[#081a2b] mt-1">{{ $totalEmployees }} Members</h3>
             </div>
 
-            {{-- Metrics Tile 2 --}}
+            {{-- Pending Leave Actions --}}
             <div class="bg-white p-6 rounded-xl border border-[#e2e8f0] shadow-sm">
                 <p class="text-xs font-bold text-[#2168ab] uppercase tracking-widest">Pending Leave Actions</p>
                 <h3 class="text-3xl font-extrabold mt-1">
                     <span class="{{ $pendingLeaves > 0 ? 'text-yellow-600' : 'text-slate-400' }}">{{ $pendingLeaves }}
                         Requests</span>
                 </h3>
-            </div>
-
-            {{-- Navigation Action Short-Links --}}
-            <div
-                class="bg-white p-6 rounded-xl border border-[#e2e8f0] shadow-sm flex flex-col justify-between gap-3 sm:gap-0">
-                <p class="text-xs font-bold text-[#2168ab] uppercase tracking-widest">Available Streams</p>
-                <div class="flex items-center gap-3 mt-1">
-                    <a href="{{ route('reports.attendance') }}"
-                        class="text-sm font-bold text-[#2982d6] hover:text-[#2168ab] underline">Attendance Logs</a>
-                    <span class="text-slate-300">•</span>
-                    <a href="{{ route('reports.leaves') }}"
-                        class="text-sm font-bold text-[#2982d6] hover:text-[#2168ab] underline">Leave Metrics</a>
-                </div>
             </div>
         </div>
 

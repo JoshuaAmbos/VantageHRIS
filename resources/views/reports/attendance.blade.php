@@ -13,10 +13,6 @@
                 <h3 class="text-xl font-bold text-[#081a2b] tracking-tight">
                     Daily Attendance Overview for {{ \Carbon\Carbon::parse($date)->format('M j, Y') }}
                 </h3>
-                <a href="{{ route('reports.index') }}"
-                    class="text-sm font-semibold text-[#2168ab] hover:text-[#103456] inline-flex items-center mt-1">
-                    ← Back to Report Center
-                </a>
             </div>
 
             {{-- Calendar Date Parameter Form Filter --}}
