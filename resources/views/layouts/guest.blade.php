@@ -49,4 +49,12 @@
 
 </body>
 
+<script>
+    // Password visibility toggle
+
+    function togglePassword() {
+        const passwordInput = document.getElementById("password");
+        passwordInput.type = passwordInput.type === "password" ? "text" : "password";
+    } </script>
+
 </html>
